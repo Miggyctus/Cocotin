@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocotin Pañalería</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">   
+</head>
+<body>
+
+<header class="header">
+    <div class="header-content">
+        <div class="logo">COCOTIN</div>
+
+        <nav class="nav">
+            <a href="#" class="nav-link">Productos</a>
+            <a href="#" class="nav-link">Ofertas</a>
+            <a href="#" class="nav-link">Marcas</a>
+            <a href="#" class="nav-link">Contacto</a>
+        </nav>
+
+        <div class="header-actions">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    class="search"
+                    placeholder="Buscar productos..."
+                />
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="actions">
+                <div class="action-btn">
+                    <span>🛒</span>
+                    <span class="cart-badge">!</span>
+                </div>
+                <div class="action-btn">
+                    <span>👤</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="hero-tag">Envíos gratis en compras mayores a ₲150.000</span>
+        <h1>Todo lo que tu bebé necesita</h1>
+        <p>Productos de calidad para el cuidado y bienestar de tu pequeño</p>
+        <button class="btn-primary">Ver productos</button>
+    </div>
+</section>
+
+<main class="container">
+
+    <!-- Categorías (estáticas por ahora) -->
+    <section class="categories-section">
+        <div class="category-card">
+            <div class="category-icon">🧷</div>
+            <h3>Pañales</h3>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🧴</div>
+            <h3>Higiene</h3>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🍼</div>
+            <h3>Alimentación</h3>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">👶</div>
+            <h3>Cuidado</h3>
+        </div>
+        <div class="category-card">
+            <div class="category-icon">🧸</div>
+            <h3>Juguetes</h3>
+        </div>
+    </section>
+
+    <!-- Productos dinámicos -->
+    <section class="products-section">
+        <div class="section-header">
+            <h2>Productos destacados</h2>
+            <a href="#" class="view-all">Ver todos →</a>
+        </div>
+
+        <!-- 🔥 ESTE DIV QUEDA VACÍO -->
+        <div class="products">
+            <!-- scripts.js inyecta las product-card acá -->
+        </div>
+    </section>
+
+    <!-- Banner promocional -->
+    <section class="promo-banner">
+        <div class="promo-content">
+            <h2>¡Ofertas especiales esta semana!</h2>
+            <p>Hasta 30% de descuento en productos seleccionados</p>
+            <button class="btn-secondary">Ver ofertas</button>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>COCOTIN</h3>
+            <p>Tu tienda de confianza para el cuidado del bebé</p>
+        </div>
+        <div class="footer-section">
+            <h4>Información</h4>
+            <a href="nosotros.html">Sobre nosotros</a>
+            <a href="#">Términos y condiciones</a>
+            <a href="#">Política de privacidad</a>
+        </div>
+        <div class="footer-section">
+            <h4>Ayuda</h4>
+            <a href="#">Preguntas frecuentes</a>
+            <a href="#">Envíos y devoluciones</a>
+            <a href="#">Contacto</a>
+        </div>
+        <div class="footer-section">
+            <h4>Síguenos</h4>
+            <div class="social-links">
+                <a href="https://www.facebook.com/share/1CCoaNqBZM/?mibextid=wwXIfr" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/cocotin_py?igsh=ZTE3dmc1cTN5NW05" target="_blank">Instagram</a>
+                <a href="https://wa.me/595984680361" target="_blank">WhatsApp Casa central</a>
+                <a href="https://wa.me/595983366761" target="_blank">WhatsApp Sucursal Herrera</a>
+                <a href="https://wa.me/595974216695" target="_blank">WhatsApp Sucursal Japón</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2025 Cocotin Pañalería. Todos los derechos reservados.</p>
+    </div>
+</footer>
+
+<!-- 🔥 SCRIPT QUE TRAE LOS PRODUCTOS -->
+<script src="scripts.js"></script>
+
+</body>
+</html>
