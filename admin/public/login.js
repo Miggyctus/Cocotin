@@ -3,7 +3,7 @@ const API_URL = "http://localhost:3000";
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("user").value;
   const password = document.getElementById("password").value;
 
   try {

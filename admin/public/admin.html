@@ -117,6 +117,43 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Lista de pedidos -->
+            <div class="pedidos-lista" style="display:none;">
+            <table id="tabla-pedidos">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                </tr>
+                </thead>
+                <tbody id="tbody-pedidos">
+                <!-- se llena dinámicamente -->
+                </tbody>
+            </table>
+            </div>
+            <!-- Estadísticas -->
+            <div class="estadisticas" style="display:none;">
+            <div class="stats-cards">
+                <div class="card" id="stat-orders"></div>
+                <div class="card" id="stat-revenue"></div>
+                <div class="card" id="stat-pending"></div>
+                <div class="card" id="stat-products"></div>
+            </div>
+
+            <h3 style="margin-top:30px;">Productos más vendidos</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Unidades</th>
+                </tr>
+                </thead>
+                <tbody id="tbody-top-products"></tbody>
+            </table>
+            </div>
+
         </main>
     </div>
 

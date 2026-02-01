@@ -213,3 +213,70 @@ tbody td {
     background: #f8d7da;
     color: #721c24;
 }
+
+/* =========================
+   BOTÓN TOGGLE (ACTIVAR / DESACTIVAR)
+========================= */
+.btn-toggle {
+  background-color: #e74c3c; /* rojo desactivar */
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 6px;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-toggle:hover {
+  background-color: #c0392b;
+}
+
+/* cuando el producto está inactivo (👁️) */
+.btn-toggle.activar {
+  background-color: #2ecc71; /* verde activar */
+}
+
+.btn-toggle.activar:hover {
+  background-color: #27ae60;
+}
+
+/* =========================
+   FIX ALINEACIÓN BOTONES ACCIONES
+========================= */
+.acciones {
+    display: flex;
+    align-items: center;   /* 👈 CLAVE */
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-editar,
+.btn-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;          /* 👈 MISMO ALTO */
+    min-width: 32px;
+    padding: 0;            /* 👈 elimina diferencias */
+    font-size: 14px;       /* 👈 unifica tamaño */
+    line-height: 1;
+}
+
+tbody td {
+    vertical-align: middle; /* 👈 ESTA ES LA CLAVE */
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.stats-cards .card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  font-weight: 600;
+}

@@ -14,6 +14,24 @@ export const getProducts = async (_req: Request, res: Response) => {
   res.json(products);
 };
 
+export async function toggleProduct(req: Request, res: Response) {
+  const id = Number(req.params.id);
+
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) {
+    return res.status(404).json({ error: "Producto no encontrado" });
+  }
+
+  const updated = await prisma.product.update({
+    where: { id },
+    data: { isActive: !product.isActive },
+  });
+
+  res.json(updated);
+}
+
+
+
 export const createProduct = async (req: Request, res: Response) => {
   try {
     const { name, description, price, stock, category } = req.body;

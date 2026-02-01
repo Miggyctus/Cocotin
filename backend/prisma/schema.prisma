@@ -43,9 +43,39 @@ model Product {
   categoryId  Int
   category    Category  @relation(fields: [categoryId], references: [id])
 
+  orderItems OrderItem[]
+  
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([categoryId])
   @@map("products")
+}
+
+model Orders {
+  id        Int          @id @default(autoincrement())
+  total     Int
+  status    OrderStatus  @default(PENDING)
+  createdAt DateTime     @default(now())
+
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id         Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Int
+
+  order     Orders   @relation(fields: [orderId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  PAYMENT_PENDING
+  PAID
+  CANCELLED
+  FAILED
 }

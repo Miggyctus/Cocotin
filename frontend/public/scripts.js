@@ -1,27 +1,43 @@
 const API_URL = "http://localhost:3000";
 
+// ============================
+// ESTADO GLOBAL
+// ============================
+let productosGlobales = [];
+
+// ============================
+// INIT
+// ============================
 document.addEventListener("DOMContentLoaded", () => {
   cargarProductos();
+  actualizarBadgeCarrito();
+  inicializarBuscador();
 });
 
+// ============================
+// PRODUCTOS
+// ============================
 async function cargarProductos() {
   try {
     const res = await fetch(`${API_URL}/products`);
     const productos = await res.json();
 
-    const contenedor = document.querySelector(".products");
-    contenedor.innerHTML = "";
-
-    productos
-      .filter(p => p.isActive)
-      .forEach(producto => {
-        const card = crearProductCard(producto);
-        contenedor.appendChild(card);
-      });
-
+    productosGlobales = productos.filter(p => p.isActive);
+    renderProductos(productosGlobales);
   } catch (error) {
     console.error("Error cargando productos", error);
   }
+}
+
+function renderProductos(lista) {
+  const contenedor = document.querySelector(".products");
+  if (!contenedor) return;
+
+  contenedor.innerHTML = "";
+
+  lista.forEach(producto => {
+    contenedor.appendChild(crearProductCard(producto));
+  });
 }
 
 function crearProductCard(producto) {
@@ -68,7 +84,65 @@ function crearProductCard(producto) {
   return card;
 }
 
+// ============================
+// CARRITO
+// ============================
+function obtenerCarrito() {
+  return JSON.parse(localStorage.getItem("carrito")) || [];
+}
+
+function guardarCarrito(carrito) {
+  localStorage.setItem("carrito", JSON.stringify(carrito));
+}
+
 function agregarAlCarrito(id) {
-  console.log("Agregar producto al carrito:", id);
-  // siguiente paso: carrito
+  const carrito = obtenerCarrito();
+  const item = carrito.find(p => p.id === id);
+
+  if (item) {
+    item.cantidad++;
+  } else {
+    carrito.push({ id, cantidad: 1 });
+  }
+
+  guardarCarrito(carrito);
+  actualizarBadgeCarrito();
+}
+
+function actualizarBadgeCarrito() {
+  const carrito = obtenerCarrito();
+  const total = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+
+  const badge = document.querySelector(".cart-badge");
+  if (!badge) return;
+
+  badge.textContent = total > 0 ? total : "!";
+}
+
+// ============================
+// BUSCADOR
+// ============================
+function inicializarBuscador() {
+  const searchInput = document.querySelector(".search");
+  if (!searchInput) return;
+
+  searchInput.addEventListener("input", e => {
+    const texto = e.target.value.toLowerCase();
+
+    const filtrados = productosGlobales.filter(p =>
+      p.name.toLowerCase().includes(texto)
+    );
+
+    renderProductos(filtrados);
+  });
+}
+
+// ============================
+// NAVEGACIÓN BÁSICA
+// ============================
+const logo = document.querySelector(".logo");
+if (logo) {
+  logo.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
 }
