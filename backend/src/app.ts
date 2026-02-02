@@ -24,7 +24,7 @@ app.get("/health", (_, res) => {
 
 app.get("/orders", getOrders);
 
-//app.get("/stats", getStats);
+app.get("/stats", getStats);
 
 app.use("/api/auth", authRoutes);
 

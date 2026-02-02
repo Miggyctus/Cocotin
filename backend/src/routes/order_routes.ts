@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createOrder, getOrders } from "../controllers/order_controller";
+import { createOrder, getOrders, getStats } from "../controllers/order_controller";
 
 const router = Router();
 
@@ -9,5 +9,6 @@ const router = Router();
  */
 router.post("/orders", createOrder);
 router.get("/orders", getOrders);
+router.get("/stats", getStats);
 
 export default router;
