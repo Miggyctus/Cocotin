@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 import authRoutes from "./routes/auth_routes";
 import productRoutes from "./products/product_routes";
 import path from "path";
-import getOrders from "./routes/order_routes";
-import getStats from "./routes/order_routes";
+import orderRoutes from "./routes/order_routes";
 
 dotenv.config();
 
@@ -22,9 +21,7 @@ app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
-app.get("/orders", getOrders);
-
-app.get("/stats", getStats);
+app.use("/api", orderRoutes);
 
 app.use("/api/auth", authRoutes);
 
