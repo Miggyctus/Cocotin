@@ -80,21 +80,49 @@ export async function getStats(req: Request, res: Response) {
   }
 }
 
-
 export async function createOrder(req: Request, res: Response) {
   try {
-    const { items } = req.body;
+    const {
+      items,
+      customerName,
+      customerPhone,
+      customerEmail,
+      deliveryAddress,
+      deliveryMethod,
+      notes,
+    } = req.body;
 
-    // =========================
-    // Validaciones básicas
-    // =========================
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: "Carrito vacío" });
     }
 
-    // =========================
-    // Traer productos reales
-    // =========================
+    if (
+      typeof customerName !== "string" ||
+      typeof customerPhone !== "string" ||
+      typeof customerEmail !== "string" ||
+      typeof deliveryAddress !== "string" ||
+      typeof deliveryMethod !== "string"
+    ) {
+      return res.status(400).json({ error: "Datos del comprador incompletos" });
+    }
+
+    const sanitizedCustomerName = customerName.trim();
+    const sanitizedCustomerPhone = customerPhone.trim();
+    const sanitizedCustomerEmail = customerEmail.trim();
+    const sanitizedDeliveryAddress = deliveryAddress.trim();
+    const sanitizedDeliveryMethod = deliveryMethod.trim();
+    const sanitizedNotes = typeof notes === "string" ? notes.trim() : undefined;
+
+    if (
+      !sanitizedCustomerName ||
+      !sanitizedCustomerPhone ||
+      !sanitizedCustomerEmail ||
+      !sanitizedDeliveryAddress ||
+      !sanitizedDeliveryMethod
+    ) {
+      return res.status(400).json({ error: "Todos los campos obligatorios deben completarse" });
+    }
+
     const productIds = items.map((item: any) => item.id);
 
     const productos = await prisma.product.findMany({
@@ -108,9 +136,6 @@ export async function createOrder(req: Request, res: Response) {
       return res.status(400).json({ error: "Productos inválidos" });
     }
 
-    // =========================
-    // Armar items del pedido
-    // =========================
     let total = 0;
 
     const orderItems = items.map((item: any) => {
@@ -120,24 +145,32 @@ export async function createOrder(req: Request, res: Response) {
         throw new Error(`Producto no encontrado: ${item.id}`);
       }
 
+      const quantity = Number(item.cantidad);
+      if (!Number.isInteger(quantity) || quantity <= 0) {
+        throw new Error(`Cantidad inválida para producto: ${item.id}`);
+      }
+
       const price = Number(producto.price);
-      const subtotal = price * item.cantidad;
+      const subtotal = price * quantity;
       total += subtotal;
 
       return {
         productId: producto.id,
-        quantity: item.cantidad,
-        price: producto.price, // precio al momento de compra
+        quantity,
+        price: Math.round(price),
       };
     });
 
-    // =========================
-    // Crear pedido + items
-    // =========================
     const order = await prisma.orders.create({
       data: {
-        total,
+        total: Math.round(total),
         status: "PENDING",
+        customerName: sanitizedCustomerName,
+        customerPhone: sanitizedCustomerPhone,
+        customerEmail: sanitizedCustomerEmail,
+        deliveryAddress: sanitizedDeliveryAddress,
+        deliveryMethod: sanitizedDeliveryMethod,
+        notes: sanitizedNotes || null,
         items: {
           create: orderItems,
         },
@@ -147,19 +180,13 @@ export async function createOrder(req: Request, res: Response) {
       },
     });
 
-    // =========================
-    // Respuesta
-    // =========================
     res.status(201).json({
       orderId: order.id,
       total: order.total,
       status: order.status,
     });
-
   } catch (error) {
     console.error("Error creando order:", error);
     res.status(500).json({ error: "Error creando pedido" });
   }
-
-  
 }

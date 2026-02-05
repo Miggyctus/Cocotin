@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth_routes";
 import productRoutes from "./products/product_routes";
+import orderRoutes from "./routes/order_routes";
 import path from "path";
 import orderRoutes from "./routes/order_routes";
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/products", productRoutes);
+app.use("/api", orderRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 

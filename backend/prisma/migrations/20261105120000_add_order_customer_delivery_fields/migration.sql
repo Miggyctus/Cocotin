@@ -1,0 +1,7 @@
+ALTER TABLE `Orders`
+  ADD COLUMN `customerName` VARCHAR(191) NOT NULL,
+  ADD COLUMN `customerPhone` VARCHAR(191) NOT NULL,
+  ADD COLUMN `customerEmail` VARCHAR(191) NOT NULL,
+  ADD COLUMN `deliveryAddress` VARCHAR(191) NOT NULL,
+  ADD COLUMN `deliveryMethod` VARCHAR(191) NOT NULL,
+  ADD COLUMN `notes` VARCHAR(191) NULL;
