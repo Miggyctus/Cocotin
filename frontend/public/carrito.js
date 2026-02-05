@@ -1,8 +1,5 @@
 const API_URL = "http://localhost:3000";
 
-// ============================
-// UTILIDADES
-// ============================
 function obtenerCarrito() {
   return JSON.parse(localStorage.getItem("carrito")) || [];
 }
@@ -11,9 +8,6 @@ function guardarCarrito(carrito) {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
-// ============================
-// RENDER
-// ============================
 async function renderCarrito() {
   const contenedor = document.getElementById("carrito-contenido");
   const totalDiv = document.getElementById("carrito-total");
@@ -50,8 +44,8 @@ async function renderCarrito() {
 
     div.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px;">
-        <img 
-          src="${producto.image ? API_URL + producto.image : 'https://via.placeholder.com/80'}"
+        <img
+          src="${producto.image ? API_URL + producto.image : "https://via.placeholder.com/80"}"
           style="width:80px;height:80px;object-fit:cover;border-radius:8px;"
         />
         <div>
@@ -74,9 +68,6 @@ async function renderCarrito() {
   totalDiv.textContent = `Total: ₲ ${total.toLocaleString("es-PY")}`;
 }
 
-// ============================
-// ACCIONES
-// ============================
 function cambiarCantidad(id, delta) {
   const carrito = obtenerCarrito();
   const item = carrito.find(p => p.id === id);
@@ -100,7 +91,48 @@ function eliminarItem(id) {
   renderCarrito();
 }
 
-// ============================
-// INIT
-// ============================
-document.addEventListener("DOMContentLoaded", renderCarrito);
+async function finalizarCompra(event) {
+  event.preventDefault();
+
+  const carrito = obtenerCarrito();
+  if (carrito.length === 0) {
+    alert("Tu carrito está vacío.");
+    return;
+  }
+
+  const payload = {
+    items: carrito,
+    customerName: document.getElementById("customer-name").value.trim(),
+    customerPhone: document.getElementById("customer-phone").value.trim(),
+    customerEmail: document.getElementById("customer-email").value.trim(),
+    deliveryAddress: document.getElementById("delivery-address").value.trim(),
+    deliveryMethod: document.getElementById("delivery-method").value,
+    notes: document.getElementById("order-notes").value.trim(),
+  };
+
+  const response = await fetch(`${API_URL}/api/orders`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    alert(errorData.error || "No se pudo crear el pedido.");
+    return;
+  }
+
+  const data = await response.json();
+  guardarCarrito([]);
+  await renderCarrito();
+  document.getElementById("checkout-form").reset();
+  alert(`Pedido #${data.orderId} creado correctamente.`);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderCarrito();
+  const form = document.getElementById("checkout-form");
+  form.addEventListener("submit", finalizarCompra);
+});
