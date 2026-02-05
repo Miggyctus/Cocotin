@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth_routes";
 import productRoutes from "./products/product_routes";
 import orderRoutes from "./routes/order_routes";
 import path from "path";
+import orderRoutes from "./routes/order_routes";
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
+
+app.use("/api", orderRoutes);
 
 app.use("/api/auth", authRoutes);
 

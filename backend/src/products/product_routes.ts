@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", getProducts);
 
-router.patch("/:id/toggle", toggleProduct);
+router.patch("/:id/toggle", requireAuth, requireAdmin, toggleProduct);
 
 router.post(
   "/",
