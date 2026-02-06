@@ -280,3 +280,8 @@ tbody td {
   border-radius: 12px;
   font-weight: 600;
 }
+
+select {
+  font-size: 13px;
+  cursor: pointer;
+}

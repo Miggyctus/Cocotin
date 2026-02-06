@@ -195,6 +195,70 @@ async function editarProducto(id) {
 /* =========================
    PEDIDOS
 ========================= */
+function renderEstadoSelect(pedido) {
+  const transitions = {
+    PENDING: ["PENDING", "PAID", "CANCELLED"],
+    PAID: ["PAID", "CONFIRMED", "CANCELLED"],
+    CONFIRMED: ["CONFIRMED", "DELIVERED"],
+    DELIVERED: ["DELIVERED"],
+    CANCELLED: ["CANCELLED"],
+  };
+
+  const labels = {
+    PENDING: "Pendiente",
+    PAID: "Pagado",
+    CONFIRMED: "Confirmado",
+    DELIVERED: "Entregado",
+    CANCELLED: "Cancelado",
+  };
+
+  const options = transitions[pedido.status] || [pedido.status];
+
+  const disabled =
+    pedido.status === "DELIVERED" || pedido.status === "CANCELLED";
+
+  return `
+    <select 
+      onchange="cambiarEstadoPedido(${pedido.id}, this.value)"
+      ${disabled ? "disabled" : ""}
+    >
+      ${options
+        .map(
+          s => `
+        <option value="${s}" ${s === pedido.status ? "selected" : ""}>
+          ${labels[s]}
+        </option>
+      `
+        )
+        .join("")}
+    </select>
+  `;
+}
+
+
+async function cambiarEstadoPedido(orderId, nuevoEstado) {
+  try {
+    const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + TOKEN,
+      },
+      body: JSON.stringify({ status: nuevoEstado }),
+    });
+
+    if (!res.ok) {
+      throw new Error("No se pudo actualizar el estado");
+    }
+
+    // refrescamos pedidos para ver el cambio
+    cargarPedidosAdmin();
+  } catch (err) {
+    console.error(err);
+    alert("Error al cambiar el estado del pedido");
+  }
+}
+
 async function cargarPedidosAdmin() {
   try {
     const res = await fetch(`${API_URL}/orders`, {
@@ -223,7 +287,10 @@ async function cargarPedidosAdmin() {
         <tr>
           <td>#${pedido.id}</td>
           <td>₲ ${Number(pedido.total).toLocaleString()}</td>
-          <td><span class="badge">${pedido.status}</span></td>
+          <td>
+            ${renderEstadoSelect(pedido)}
+          </td>
+
           <td>${new Date(pedido.createdAt).toLocaleString()}</td>
         </tr>
       `;
@@ -239,7 +306,7 @@ async function cargarPedidosAdmin() {
 ========================= */
 async function cargarEstadisticas() {
   try {
-    const res = await fetch(`${API_URL}/stats`, {
+    const res = await fetch(`${API_URL}/orders/stats`, {
       headers: {
         Authorization: "Bearer " + TOKEN,
       },
@@ -274,13 +341,14 @@ async function cargarEstadisticas() {
     }
 
     stats.topProducts.forEach(p => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${p.name}</td>
-          <td>${p.quantity}</td>
-        </tr>
-      `;
-    });
+    tbody.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.quantity}</td>
+      </tr>
+    `;
+  });
+
   } catch (err) {
     console.error(err);
   }

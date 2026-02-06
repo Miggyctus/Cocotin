@@ -591,3 +591,121 @@ body {
         font-size: 22px;
     }
 }
+
+/* =========================
+   Checkout / Carrito Form
+========================= */
+
+.checkout-form {
+  max-width: 520px;
+  background: white;
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.checkout-form h2 {
+  margin-bottom: var(--spacing-sm);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: #fafafa;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  background: white;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(164, 137, 107, 0.15);
+}
+
+.checkout-form button {
+  margin-top: var(--spacing-sm);
+}
+
+/* Total carrito */
+#carrito-total {
+  font-size: 20px;
+  color: var(--color-dark);
+  margin: var(--spacing-md) 0;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .checkout-form {
+    padding: var(--spacing-md);
+  }
+}
+
+/* =========================
+   Cart quantity buttons
+========================= */
+
+.cart-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qty-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: #f5f5f5;
+  color: var(--color-dark);
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.qty-btn:hover {
+  background: var(--color-accent);
+  color: white;
+  transform: scale(1.1);
+}
+
+.qty-value {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.remove-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: #ffecec;
+  color: #d63031;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: #d63031;
+  color: white;
+  transform: scale(1.1);
+}

@@ -1,5 +1,9 @@
 const API_URL = "http://localhost:3000";
 
+/* =========================
+   Carrito helpers
+========================= */
+
 function obtenerCarrito() {
   return JSON.parse(localStorage.getItem("carrito")) || [];
 }
@@ -8,10 +12,33 @@ function guardarCarrito(carrito) {
   localStorage.setItem("carrito", JSON.stringify(carrito));
 }
 
+/* =========================
+   Limpia productos que ya no existen
+========================= */
+
+async function limpiarCarritoInvalido(productos) {
+  const carrito = obtenerCarrito();
+
+  const carritoLimpio = carrito.filter(item =>
+    productos.some(p => p.id === item.id)
+  );
+
+  if (carritoLimpio.length !== carrito.length) {
+    guardarCarrito(carritoLimpio);
+  }
+
+  return carritoLimpio;
+}
+
+/* =========================
+   Render carrito
+========================= */
+
 async function renderCarrito() {
   const contenedor = document.getElementById("carrito-contenido");
   const totalDiv = document.getElementById("carrito-total");
-  const carrito = obtenerCarrito();
+
+  let carrito = obtenerCarrito();
 
   if (carrito.length === 0) {
     contenedor.innerHTML = "<p>Tu carrito está vacío.</p>";
@@ -19,8 +46,18 @@ async function renderCarrito() {
     return;
   }
 
+  // Traemos productos reales desde backend
   const res = await fetch(`${API_URL}/products`);
   const productos = await res.json();
+
+  // 🔥 limpiamos productos que ya no existen
+  carrito = await limpiarCarritoInvalido(productos);
+
+  if (carrito.length === 0) {
+    contenedor.innerHTML = "<p>Tu carrito está vacío.</p>";
+    totalDiv.textContent = "";
+    return;
+  }
 
   let total = 0;
   contenedor.innerHTML = "";
@@ -54,11 +91,11 @@ async function renderCarrito() {
         </div>
       </div>
 
-      <div style="display:flex; align-items:center; gap:12px;">
-        <button onclick="cambiarCantidad(${item.id}, -1)">−</button>
-        <span>${item.cantidad}</span>
-        <button onclick="cambiarCantidad(${item.id}, 1)">+</button>
-        <button onclick="eliminarItem(${item.id})">🗑️</button>
+      <div class="cart-actions">
+        <button class="qty-btn" onclick="cambiarCantidad(${item.id}, -1)">−</button>
+        <span class="qty-value">${item.cantidad}</span>
+        <button class="qty-btn" onclick="cambiarCantidad(${item.id}, 1)">+</button>
+        <button class="remove-btn" onclick="eliminarItem(${item.id})">🗑️</button>
       </div>
     `;
 
@@ -67,6 +104,10 @@ async function renderCarrito() {
 
   totalDiv.textContent = `Total: ₲ ${total.toLocaleString("es-PY")}`;
 }
+
+/* =========================
+   Acciones carrito
+========================= */
 
 function cambiarCantidad(id, delta) {
   const carrito = obtenerCarrito();
@@ -91,6 +132,10 @@ function eliminarItem(id) {
   renderCarrito();
 }
 
+/* =========================
+   Finalizar compra
+========================= */
+
 async function finalizarCompra(event) {
   event.preventDefault();
 
@@ -110,7 +155,7 @@ async function finalizarCompra(event) {
     notes: document.getElementById("order-notes").value.trim(),
   };
 
-  const response = await fetch(`${API_URL}/api/orders`, {
+  const response = await fetch(`${API_URL}/orders`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -125,14 +170,21 @@ async function finalizarCompra(event) {
   }
 
   const data = await response.json();
+
   guardarCarrito([]);
   await renderCarrito();
   document.getElementById("checkout-form").reset();
+
   alert(`Pedido #${data.orderId} creado correctamente.`);
 }
 
+/* =========================
+   Init
+========================= */
+
 document.addEventListener("DOMContentLoaded", () => {
   renderCarrito();
+
   const form = document.getElementById("checkout-form");
   form.addEventListener("submit", finalizarCompra);
 });

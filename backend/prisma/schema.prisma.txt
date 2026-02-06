@@ -53,16 +53,10 @@ model Product {
 }
 
 model Orders {
-  id              Int          @id @default(autoincrement())
-  total           Int
-  status          OrderStatus  @default(PENDING)
-  customerName    String
-  customerPhone   String
-  customerEmail   String
-  deliveryAddress String
-  deliveryMethod  String
-  notes           String?
-  createdAt       DateTime     @default(now())
+  id        Int          @id @default(autoincrement())
+  total     Int
+  status    OrderStatus  @default(PENDING)
+  createdAt DateTime     @default(now())
 
   items     OrderItem[]
 }
@@ -80,8 +74,8 @@ model OrderItem {
 
 enum OrderStatus {
   PENDING
+  PAYMENT_PENDING
   PAID
-  CONFIRMED
-  DELIVERED
   CANCELLED
+  FAILED
 }

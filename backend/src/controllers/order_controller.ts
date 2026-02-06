@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../database/prisma";
+import { OrderStatus } from "@prisma/client";
 
 export async function getOrders(req: Request, res: Response) {
   try {
@@ -19,66 +20,60 @@ export async function getStats(req: Request, res: Response) {
     const [
       totalOrders,
       pendingOrders,
-      totalRevenue,
+      paidRevenue,
       productStatus,
       topProducts,
     ] = await Promise.all([
+      // Todos los pedidos
       prisma.orders.count(),
 
+      // Pendientes reales
       prisma.orders.count({
         where: { status: "PENDING" },
       }),
 
+      // 💰 Ingresos SOLO de pedidos pagados/avanzados
       prisma.orders.aggregate({
         _sum: { total: true },
+        where: { status: { in: ["PAID", "CONFIRMED", "DELIVERED"] } },
       }),
 
+      // Productos activos / inactivos
       prisma.product.groupBy({
         by: ["isActive"],
         _count: { _all: true },
       }),
 
+      // Top productos SOLO de ventas reales
       prisma.orderItem.groupBy({
         by: ["productId"],
         _sum: { quantity: true },
-        orderBy: {
-          _sum: { quantity: "desc" },
+        where: {
+          order: { status: { in: ["PAID", "CONFIRMED", "DELIVERED"] } },
         },
+        orderBy: { _sum: { quantity: "desc" } },
         take: 5,
       }),
     ]);
 
-    const productsWithNames = await prisma.product.findMany({
-      where: {
-        id: { in: topProducts.map(p => p.productId) },
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    const top = topProducts.map(p => ({
-      productId: p.productId,
-      name: productsWithNames.find(x => x.id === p.productId)?.name ?? "Desconocido",
-      quantity: p._sum.quantity ?? 0,
-    }));
-
     res.json({
-      totalOrders,
-      pendingOrders,
-      totalRevenue: totalRevenue._sum.total ?? 0,
+      totalOrders: totalOrders ?? 0,
+      pendingOrders: pendingOrders ?? 0,
+      totalRevenue: Number(paidRevenue._sum.total ?? 0),
       products: {
-        active: productStatus.find(p => p.isActive === true)?._count._all ?? 0,
-        inactive: productStatus.find(p => p.isActive === false)?._count._all ?? 0,
+        active:
+          productStatus.find(p => p.isActive === true)?._count._all ?? 0,
+        inactive:
+          productStatus.find(p => p.isActive === false)?._count._all ?? 0,
       },
-      topProducts: top,
+      topProducts: topProducts ?? [],
     });
   } catch (err) {
-    console.error(err);
+    console.error("getStats error:", err);
     res.status(500).json({ error: "Error obteniendo estadísticas" });
   }
 }
+
 
 export async function createOrder(req: Request, res: Response) {
   try {
@@ -188,5 +183,62 @@ export async function createOrder(req: Request, res: Response) {
   } catch (error) {
     console.error("Error creando order:", error);
     res.status(500).json({ error: "Error creando pedido" });
+  }
+}
+
+const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
+  PENDING: ["PAID", "CANCELLED"],
+  PAID: ["CONFIRMED", "CANCELLED"],
+  CONFIRMED: ["DELIVERED"],
+  DELIVERED: [],
+  CANCELLED: [],
+};
+
+export async function updateOrderStatus(req: Request, res: Response) {
+  try {
+    const orderId = Number(req.params.id);
+    const { status } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
+
+    if (!Object.values(OrderStatus).includes(status)) {
+      return res.status(400).json({ error: "Estado inválido" });
+    }
+
+    const nextStatus = status as OrderStatus;
+
+    const order = await prisma.orders.findUnique({
+      where: { id: orderId },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Pedido no encontrado" });
+    }
+
+    const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
+      [OrderStatus.PENDING]: [OrderStatus.PAID, OrderStatus.CANCELLED],
+      [OrderStatus.PAID]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
+      [OrderStatus.CONFIRMED]: [OrderStatus.DELIVERED],
+      [OrderStatus.DELIVERED]: [],
+      [OrderStatus.CANCELLED]: [],
+    };
+
+    if (!allowedTransitions[order.status].includes(nextStatus)) {
+      return res.status(400).json({
+        error: `No se puede pasar de ${order.status} a ${nextStatus}`,
+      });
+    }
+
+    await prisma.orders.update({
+      where: { id: orderId },
+      data: { status: nextStatus },
+    });
+
+    res.json({ success: true, status: nextStatus });
+  } catch (err) {
+    console.error("updateOrderStatus:", err);
+    res.status(500).json({ error: "Error actualizando pedido" });
   }
 }
