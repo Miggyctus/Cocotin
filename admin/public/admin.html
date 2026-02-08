@@ -126,6 +126,7 @@
                     <th>Total</th>
                     <th>Estado</th>
                     <th>Fecha</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody id="tbody-pedidos">
@@ -156,7 +157,12 @@
 
         </main>
     </div>
-
+    <div id="modal-pedido" class="modal" style="display:none;">
+    <div class="modal-content modal-pedido">
+        <span class="close" onclick="cerrarModalPedido()">&times;</span>
+        <div id="modal-pedido-body"></div>
+    </div>
+    </div>
     <script src="admin.js"></script>
 </body>
 </html>

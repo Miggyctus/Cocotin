@@ -285,3 +285,39 @@ select {
   font-size: 13px;
   cursor: pointer;
 }
+
+/* Botón ver pedido */
+.btn-ver {
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-ver:hover {
+  background: #4338ca;
+}
+
+/* Modal pedido */
+.modal-pedido {
+  max-width: 520px;
+}
+
+.modal-pedido h3 {
+  margin-top: 0;
+}
+
+.modal-pedido h4 {
+  margin-top: 16px;
+}
+
+.modal-pedido ul {
+  padding-left: 18px;
+}
+
+.modal-pedido li {
+  margin-bottom: 6px;
+}

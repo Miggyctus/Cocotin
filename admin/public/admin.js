@@ -1,5 +1,7 @@
 const API_URL = "http://localhost:3000";
 const TOKEN = localStorage.getItem("token");
+let pedidosCache = [];
+
 
 if (!TOKEN) {
   window.location.href = "login.html";
@@ -236,28 +238,31 @@ function renderEstadoSelect(pedido) {
 }
 
 
-async function cambiarEstadoPedido(orderId, nuevoEstado) {
+async function cambiarEstadoPedido(id, status) {
   try {
-    const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
+    const res = await fetch(`${API_URL}/orders/${id}/status`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer " + TOKEN,
       },
-      body: JSON.stringify({ status: nuevoEstado }),
+      body: JSON.stringify({ status }),
     });
 
     if (!res.ok) {
-      throw new Error("No se pudo actualizar el estado");
+      const err = await res.json();
+      alert(err.error || "No se pudo cambiar el estado");
+      return;
     }
 
-    // refrescamos pedidos para ver el cambio
-    cargarPedidosAdmin();
+    await cargarPedidosAdmin();
+    await cargarEstadisticas();
   } catch (err) {
     console.error(err);
-    alert("Error al cambiar el estado del pedido");
+    alert("Error cambiando estado");
   }
 }
+
 
 async function cargarPedidosAdmin() {
   try {
@@ -268,6 +273,7 @@ async function cargarPedidosAdmin() {
     });
 
     const pedidos = await res.json();
+    pedidosCache = pedidos;
     const tbody = document.getElementById("tbody-pedidos");
     tbody.innerHTML = "";
 
@@ -287,19 +293,64 @@ async function cargarPedidosAdmin() {
         <tr>
           <td>#${pedido.id}</td>
           <td>₲ ${Number(pedido.total).toLocaleString()}</td>
-          <td>
+           <td>
             ${renderEstadoSelect(pedido)}
           </td>
-
           <td>${new Date(pedido.createdAt).toLocaleString()}</td>
+          <td>
+            <button class="btn-ver" onclick="verPedido(${pedido.id})">
+              👁 Ver
+            </button>
+          </td>
         </tr>
       `;
     });
+
   } catch (err) {
     console.error(err);
     alert("Error al cargar pedidos");
   }
 }
+function verPedido(id) {
+  const pedido = pedidosCache.find(p => p.id === id);
+  if (!pedido) return;
+
+  const html = `
+    <h3>Pedido #${pedido.id}</h3>
+
+    <p><b>Cliente:</b> ${pedido.customer.name}</p>
+    <p><b>Tel:</b> ${pedido.customer.phone}</p>
+    <p><b>Email:</b> ${pedido.customer.email}</p>
+
+    <p><b>Dirección:</b> ${pedido.delivery.address}</p>
+    <p><b>Método:</b> ${pedido.delivery.method}</p>
+    ${pedido.delivery.notes ? `<p><b>Notas:</b> ${pedido.delivery.notes}</p>` : ""}
+
+    <h4>Productos</h4>
+    <ul>
+      ${pedido.items
+        .map(
+          i => `
+        <li>
+          ${i.name} × ${i.quantity}
+          — ₲ ${(i.price * i.quantity).toLocaleString()}
+        </li>
+      `
+        )
+        .join("")}
+    </ul>
+
+    <h4>Total: ₲ ${pedido.total.toLocaleString()}</h4>
+  `;
+
+  document.getElementById("modal-pedido-body").innerHTML = html;
+  document.getElementById("modal-pedido").style.display = "flex";
+}
+
+function cerrarModalPedido() {
+  document.getElementById("modal-pedido").style.display = "none";
+}
+
 
 /* =========================
    ESTADÍSTICAS

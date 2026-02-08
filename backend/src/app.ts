@@ -1,6 +1,6 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 import authRoutes from "./routes/auth_routes";
 import productRoutes from "./products/product_routes";
 import orderRoutes from "./routes/order_routes";
@@ -8,7 +8,6 @@ import path from "path";
 import { getOrders, getStats } from "./controllers/order_controller";
 
 
-dotenv.config();
 
 const app = express();
 
