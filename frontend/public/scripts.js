@@ -44,6 +44,10 @@ function crearProductCard(producto) {
   const card = document.createElement("div");
   card.className = "product-card";
 
+  card.addEventListener("click", () => {
+    window.location.href = `producto.html?id=${producto.id}`;
+  });
+
   card.innerHTML = `
     ${producto.isNew ? `<div class="product-badge">Nuevo</div>` : ""}
     
@@ -145,4 +149,70 @@ if (logo) {
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
+}
+
+// ============================
+// FILTRADO POR CATEGORÍA
+// ============================
+document.querySelectorAll(".category-card").forEach(card => {
+  card.addEventListener("click", () => {
+    const categoria = card.dataset.category;
+
+    if (categoria === "Todos") {
+      renderProductos(productosGlobales);
+    } else {
+      const filtrados = productosGlobales.filter(p =>
+        p.category?.name === categoria
+      );
+      renderProductos(filtrados);
+    }
+
+    document.querySelector("#productos").scrollIntoView({
+      behavior: "smooth"
+    });
+  });
+});
+
+// ============================
+// FILTRO OFERTAS
+// ============================
+const btnOfertas = document.getElementById("btn-ofertas");
+
+if (btnOfertas) {
+  btnOfertas.addEventListener("click", () => {
+    const ofertas = productosGlobales.filter(p => 
+      p.badge === "Oferta"
+    );
+
+    renderProductos(ofertas);
+
+    document.querySelector("#productos").scrollIntoView({
+      behavior: "smooth"
+    });
+  });
+}
+
+function verProducto(id) {
+  const producto = productosGlobales.find(p => p.id === id);
+  if (!producto) return;
+
+  const html = `
+    <img 
+      src="${producto.image ? API_URL + producto.image : 'https://via.placeholder.com/300'}"
+      style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;"
+    >
+    <h2>${producto.name}</h2>
+    <p>${producto.description ?? ""}</p>
+    <h3>₲ ${Number(producto.price).toLocaleString("es-PY")}</h3>
+    <button class="btn-primary" onclick="agregarAlCarrito(${producto.id})">
+      Agregar al carrito
+    </button>
+  `;
+
+  document.getElementById("modal-producto-body").innerHTML = html;
+  document.getElementById("modal-producto").style.display = "flex";
+}
+
+function cerrarModalProducto() {
+  document.getElementById("modal-producto").style.display = "none";
 }
