@@ -54,34 +54,78 @@ export async function toggleProduct(req: Request, res: Response) {
 
 export const createProduct = async (req: Request, res: Response) => {
   try {
-    const { name, description, price, stock, category } = req.body;
+    const { name, description, price, stock, category, barcode } = req.body;
 
-    const image = req.file ? `/uploads/${req.file.filename}` : null;
+    // 🔹 Validaciones básicas
+    if (!name || typeof name !== "string") {
+      return res.status(400).json({ error: "Nombre requerido" });
+    }
 
-    if (!category) {
+    if (!barcode || typeof barcode !== "string") {
+      return res.status(400).json({ error: "Código de barras requerido" });
+    }
+
+    if (!price || isNaN(Number(price))) {
+      return res.status(400).json({ error: "Precio inválido" });
+    }
+
+    if (stock === undefined || isNaN(Number(stock))) {
+      return res.status(400).json({ error: "Stock inválido" });
+    }
+
+    if (!category || typeof category !== "string") {
       return res.status(400).json({ error: "Categoría requerida" });
     }
 
+    // 🔹 Verificar barcode duplicado
+    const existingBarcode = await prisma.product.findUnique({
+      where: { barcode },
+    });
+
+    if (existingBarcode) {
+      return res.status(400).json({
+        error: "Ya existe un producto con ese código de barras",
+      });
+    }
+
+    // 🔹 Manejo de imagen
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
+
+    // 🔹 Crear producto
     const product = await prisma.product.create({
       data: {
-        name,
-        description,
+        name: name.trim(),
+        description: description ? description.trim() : null,
         price: Number(price),
         stock: Number(stock),
+        barcode: barcode.trim(),
         image,
         category: {
           connectOrCreate: {
-            where: { name: category },
-            create: { name: category },
+            where: { name: category.trim() },
+            create: { name: category.trim() },
           },
         },
       },
+      include: {
+        category: true,
+      },
     });
 
-    res.status(201).json(product);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al crear producto" });
+    return res.status(201).json(product);
+  } catch (error: any) {
+    console.error("createProduct:", error);
+
+    // 🔹 Protección contra error unique inesperado
+    if (error.code === "P2002") {
+      return res.status(400).json({
+        error: "Código de barras duplicado",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Error al crear producto",
+    });
   }
 };
 

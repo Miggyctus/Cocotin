@@ -64,6 +64,7 @@ async function cargarProductosAdmin() {
           </td>
           <td>${producto.name}</td>
           <td>${producto.category?.name ?? "-"}</td>
+          <td>${producto.barcode ?? "-"}</td>
           <td>₲ ${Number(producto.price).toLocaleString()}</td>
           <td>${producto.stock}</td>
           <td>
@@ -112,7 +113,7 @@ document.getElementById("form-producto")
     formData.append("price", document.getElementById("precio").value);
     formData.append("stock", document.getElementById("stock").value);
     formData.append("category", document.getElementById("categoria").value);
-
+    formData.append("barcode", document.getElementById("barcode").value);
     const imageInput = document.getElementById("imagen");
     if (imageInput.files[0]) {
       formData.append("image", imageInput.files[0]);
@@ -183,6 +184,7 @@ async function editarProducto(id) {
   document.getElementById("precio").value = producto.price;
   document.getElementById("stock").value = producto.stock;
   document.getElementById("categoria").value = producto.categoryId;
+  document.getElementById("barcode").value = producto.barcode ?? "";
 
   if (producto.image) {
     const img = document.getElementById("preview-imagen");
