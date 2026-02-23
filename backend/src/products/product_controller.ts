@@ -111,3 +111,60 @@ export async function getProductById(req: Request, res: Response) {
     res.status(500).json({ error: "Error obteniendo producto" });
   }
 }
+
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
+
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!existingProduct) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+
+    const { name, description, price, stock, category } = req.body;
+
+    let categoryId = existingProduct.categoryId;
+
+    // Si viene categoría nueva
+    if (category) {
+      const categoryRecord = await prisma.category.upsert({
+        where: { name: category },
+        update: {},
+        create: { name: category },
+      });
+
+      categoryId = categoryRecord.id;
+    }
+
+    const image = req.file
+      ? `/uploads/${req.file.filename}`
+      : existingProduct.image;
+
+    const updated = await prisma.product.update({
+      where: { id },
+      data: {
+        name: name ?? existingProduct.name,
+        description: description ?? existingProduct.description,
+        price: price ? Number(price) : existingProduct.price,
+        stock: stock ? Number(stock) : existingProduct.stock,
+        image,
+        categoryId,
+      },
+      include: {
+        category: true,
+      },
+    });
+
+    res.json(updated);
+  } catch (error) {
+    console.error("updateProduct:", error);
+    res.status(500).json({ error: "Error actualizando producto" });
+  }
+};

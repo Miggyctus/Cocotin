@@ -63,44 +63,44 @@ export async function getStats(req: Request, res: Response) {
       paidRevenue,
       productStatus,
     ] = await Promise.all([
-      // Todos los pedidos
       prisma.orders.count(),
 
-      // Pendientes reales
       prisma.orders.count({
-        where: { status: "PENDING" },
+        where: { status: OrderStatus.PENDING },
       }),
 
-      // 💰 Ingresos SOLO de pedidos pagados/avanzados
       prisma.orders.aggregate({
         _sum: { total: true },
-        where: { status: { in: ["PAID", "CONFIRMED", "DELIVERED"] } },
+        where: {
+          status: {
+            in: [
+              OrderStatus.PAID,
+              OrderStatus.CONFIRMED,
+              OrderStatus.DELIVERED,
+            ],
+          },
+        },
       }),
 
-      // Productos activos / inactivos
       prisma.product.groupBy({
         by: ["isActive"],
         _count: { _all: true },
       }),
-
-      // Top productos SOLO de ventas reales
-      prisma.orderItem.groupBy({
-        by: ["productId"],
-        _sum: { quantity: true },
-        where: {
-          order: { status: { in: ["PAID", "CONFIRMED", "DELIVERED"] } },
-        },
-        orderBy: { _sum: { quantity: "desc" } },
-        take: 5,
-      }),
     ]);
-      // 1️⃣ agregación cruda
+
+    // 🔹 Top productos (una sola vez)
     const topProductsRaw = await prisma.orderItem.groupBy({
       by: ["productId"],
       _sum: { quantity: true },
       where: {
         order: {
-          status: { in: ["PAID", "CONFIRMED", "DELIVERED"] },
+          status: {
+            in: [
+              OrderStatus.PAID,
+              OrderStatus.CONFIRMED,
+              OrderStatus.DELIVERED,
+            ],
+          },
         },
       },
       orderBy: {
@@ -109,7 +109,6 @@ export async function getStats(req: Request, res: Response) {
       take: 5,
     });
 
-    // 2️⃣ traemos nombres de productos
     const productIds = topProductsRaw.map(p => p.productId);
 
     const products = await prisma.product.findMany({
@@ -117,9 +116,10 @@ export async function getStats(req: Request, res: Response) {
       select: { id: true, name: true },
     });
 
-    // 3️⃣ payload FINAL para el admin
     const topProducts = topProductsRaw.map(p => ({
-      name: products.find(prod => prod.id === p.productId)?.name ?? "Desconocido",
+      name:
+        products.find(prod => prod.id === p.productId)?.name ??
+        "Desconocido",
       quantity: p._sum.quantity ?? 0,
     }));
 
@@ -133,7 +133,7 @@ export async function getStats(req: Request, res: Response) {
         inactive:
           productStatus.find(p => p.isActive === false)?._count._all ?? 0,
       },
-      topProducts: topProducts ?? [],
+      topProducts,
     });
   } catch (err) {
     console.error("getStats error:", err);
@@ -362,14 +362,18 @@ export async function updateOrderStatus(req: Request, res: Response) {
 
       // 2️⃣ Descontar stock
       for (const item of order.items) {
-        await prisma.product.update({
-          where: { id: item.productId },
-          data: {
-            stock: {
-              decrement: item.quantity,
-            },
-          },
-        });
+        await prisma.$transaction(
+          order.items.map(item =>
+            prisma.product.update({
+              where: { id: item.productId },
+              data: {
+                stock: {
+                  decrement: item.quantity,
+                },
+              },
+            })
+          )
+        );
       }
     }
 

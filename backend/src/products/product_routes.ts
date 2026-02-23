@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProduct, getProducts , toggleProduct , getProductById } from "./product_controller";
+import { createProduct, getProducts , toggleProduct , getProductById , updateProduct} from "./product_controller";
 import { requireAuth, requireAdmin } from "../middleware/auth_middleware";
 import { upload } from "../middleware/upload";
 
@@ -10,6 +10,14 @@ router.get("/", getProducts);
 router.patch("/:id/toggle", requireAuth, requireAdmin, toggleProduct);
 
 router.get("/:id", getProductById);
+
+router.put(
+  "/:id",
+  requireAuth,
+  requireAdmin,
+  upload.single("image"),
+  updateProduct
+);
 
 router.post(
   "/",
