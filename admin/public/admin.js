@@ -63,8 +63,8 @@ async function cargarProductosAdmin() {
             }
           </td>
           <td>${producto.name}</td>
-          <td>${producto.category?.name ?? "-"}</td>
           <td>${producto.barcode ?? "-"}</td>
+          <td>${producto.category?.name ?? "-"}</td>
           <td>₲ ${Number(producto.price).toLocaleString()}</td>
           <td>${producto.stock}</td>
           <td>
