@@ -24,40 +24,58 @@
 
   <h2>Datos de compra</h2>
 
-<form id="checkout-form" class="checkout-form">
-  <div class="form-group">
-    <input type="text" id="customer-name" placeholder="Nombre completo" required />
+<div class="checkout-wrapper">
+
+  <div class="checkout-form-container">
+    <form id="checkout-form" class="checkout-form">
+      
+      <div class="form-group">
+        <input type="text" id="customer-name" placeholder="Nombre completo" required />
+      </div>
+
+      <div class="form-group">
+        <input type="tel" id="customer-phone" placeholder="Teléfono" required />
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="customer-email" placeholder="Correo electrónico" required />
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="delivery-address" placeholder="Dirección de entrega" required />
+      </div>
+
+      <div class="form-group">
+        <select id="delivery-method" required>
+          <option value="">Seleccionar método de entrega</option>
+          <option value="delivery">Delivery</option>
+          <option value="pickup">Retiro en local</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <textarea id="order-notes" rows="3" placeholder="Notas (opcional)"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Método de pago *</label>
+        <select id="metodo-pago" required>
+          <option value="TRANSFER">Transferencia bancaria</option>
+          <option value="CASH">Efectivo</option>
+          <option value="CARD">Tarjeta de debito/credito</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        Finalizar compra
+      </button>
+
+    </form>
   </div>
 
-  <div class="form-group">
-    <input type="tel" id="customer-phone" placeholder="Teléfono" required />
-  </div>
+  <div id="checkout-result" class="checkout-result"></div>
 
-  <div class="form-group">
-    <input type="email" id="customer-email" placeholder="Correo electrónico" required />
-  </div>
-
-  <div class="form-group">
-    <input type="text" id="delivery-address" placeholder="Dirección de entrega" required />
-  </div>
-
-  <div class="form-group">
-    <select id="delivery-method" required>
-      <option value="">Seleccionar método de entrega</option>
-      <option value="delivery">Delivery</option>
-      <option value="pickup">Retiro en local</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <textarea id="order-notes" rows="3" placeholder="Notas (opcional)"></textarea>
-  </div>
-
-  <button type="submit" class="btn-primary">
-    Finalizar compra
-  </button>
-</form>
-
+</div>
 </main>
 
 <script src="carrito.js"></script>
