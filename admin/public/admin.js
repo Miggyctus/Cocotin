@@ -46,7 +46,7 @@ let editandoProducto = null;
 ========================= */
 async function cargarProductosAdmin() {
   try {
-    const res = await fetch(`${API_URL}/products`);
+    const res = await fetch(`/products`);
     const productos = await res.json();
 
     const tbody = document.getElementById("tbody-productos");
@@ -121,8 +121,8 @@ document.getElementById("form-producto")
 
     try {
       const url = editandoProducto
-        ? `${API_URL}/products/${editandoProducto}`
-        : `${API_URL}/products`;
+        ? `/products/${editandoProducto}`
+        : `/products`;
 
       const method = editandoProducto ? "PUT" : "POST";
 
@@ -155,7 +155,7 @@ document.getElementById("form-producto")
 ========================= */
 async function toggleProducto(id) {
   try {
-    const res = await fetch(`${API_URL}/products/${id}/toggle`, {
+    const res = await fetch(`/products/${id}/toggle`, {
       method: "PATCH",
       headers: {
         Authorization: "Bearer " + TOKEN,
@@ -173,7 +173,7 @@ async function toggleProducto(id) {
    EDITAR PRODUCTO
 ========================= */
 async function editarProducto(id) {
-  const res = await fetch(`${API_URL}/products`);
+  const res = await fetch(`/products`);
   const productos = await res.json();
   const producto = productos.find(p => p.id === id);
   if (!producto) return;
@@ -242,7 +242,7 @@ function renderEstadoSelect(pedido) {
 
 async function cambiarEstadoPedido(id, status) {
   try {
-    const res = await fetch(`${API_URL}/orders/${id}/status`, {
+    const res = await fetch(`/orders/${id}/status`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -268,7 +268,7 @@ async function cambiarEstadoPedido(id, status) {
 
 async function cargarPedidosAdmin() {
   try {
-    const res = await fetch(`${API_URL}/orders`, {
+    const res = await fetch(`/orders`, {
       headers: {
         Authorization: "Bearer " + TOKEN,
       },
@@ -359,7 +359,7 @@ function cerrarModalPedido() {
 ========================= */
 async function cargarEstadisticas() {
   try {
-    const res = await fetch(`${API_URL}/orders/stats`, {
+    const res = await fetch(`/orders/stats`, {
       headers: {
         Authorization: "Bearer " + TOKEN,
       },
