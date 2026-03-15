@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000";
+const API_URL = "/api";
 const TOKEN = localStorage.getItem("token");
 let pedidosCache = [];
 
