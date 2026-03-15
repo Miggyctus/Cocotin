@@ -1,4 +1,4 @@
-const API_URL = "/api";
+const API_URL = "http://localhost:3000";
 
 /* =========================
    Carrito helpers
@@ -151,7 +151,7 @@ function generarTransferenciaHTML(data) {
   return `
     <div class="payment-card">
       <div class="payment-header">
-        <h2>Pedido confirmado</h2>
+        <h2>Pedido #${data.orderId} confirmado</h2>
         <span class="payment-status">Pendiente de pago</span>
       </div>
 
@@ -190,7 +190,7 @@ function generarEfectivoHTML(data) {
   return `
     <div class="payment-card">
       <div class="payment-header">
-        <h2>Pedido confirmado</h2>
+        <h2>Pedido #${data.orderId} confirmado</h2>
         <span class="payment-status">Pago en efectivo</span>
       </div>
 
@@ -217,7 +217,7 @@ function generarTarjetaHTML(data) {
   return `
     <div class="payment-card">
       <div class="payment-header">
-        <h2>Pedido creado</h2>
+        <h2>Pedido #${data.orderId} creado</h2>
         <span class="payment-status">Próximamente</span>
       </div>
 
