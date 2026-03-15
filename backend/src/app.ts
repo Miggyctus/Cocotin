@@ -14,7 +14,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/products", productRoutes);
+app.use("/api/products", productRoutes);
 
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
@@ -23,8 +23,8 @@ app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
-app.use("/orders", orderRoutes);
-app.use("/stats", orderRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/stats", orderRoutes);
 
 app.use("/api/auth", authRoutes);
 
