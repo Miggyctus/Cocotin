@@ -58,7 +58,7 @@ async function cargarProductosAdmin() {
           <td>
             ${
               producto.image
-                ? `<img src="/uploads/${producto.image}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
+                ? `<img src="${producto.image}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
                 : "-"
             }
           </td>
@@ -188,7 +188,7 @@ async function editarProducto(id) {
 
   if (producto.image) {
     const img = document.getElementById("preview-imagen");
-    img.src = `/uploads/${producto.image}`;
+    img.src = `${producto.image}`;
     img.style.display = "block";
   }
 
