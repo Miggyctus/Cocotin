@@ -53,7 +53,7 @@ function crearProductCard(producto) {
     
     <div class="product-image">
       <img 
-        src="${producto.image ? API_URL + producto.image : 'https://via.placeholder.com/300'}" 
+        src="${producto.image ? producto.image : 'https://via.placeholder.com/300'}" 
         alt="${producto.name}"
       >
     </div>
@@ -198,7 +198,7 @@ function verProducto(id) {
 
   const html = `
     <img 
-      src="${producto.image ? API_URL + producto.image : 'https://via.placeholder.com/300'}"
+      src="${producto.image ? producto.image : 'https://via.placeholder.com/300'}"
       style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;"
     >
     <h2>${producto.name}</h2>
