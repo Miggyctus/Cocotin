@@ -58,7 +58,7 @@ async function cargarProductosAdmin() {
           <td>
             ${
               producto.image
-                ? `<img src="${producto.image}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
+                ? `<img src="${uploads}/${producto.image}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
                 : "-"
             }
           </td>
