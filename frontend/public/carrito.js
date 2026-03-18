@@ -47,7 +47,7 @@ async function renderCarrito() {
   }
 
   // Traemos productos reales desde backend
-  const res = await fetch(`/products`);
+  const res = await fetch(`${API_URL}/products`);
   const productos = await res.json();
 
   // 🔥 limpiamos productos que ya no existen
