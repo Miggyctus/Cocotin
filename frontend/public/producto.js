@@ -59,7 +59,7 @@ function renderProducto(producto) {
     <div class="producto-page">
       <div class="producto-image">
         <img 
-          src="${producto.image ? API_URL + producto.image : 'https://via.placeholder.com/400'}"
+          src="${producto.image ? producto.image : 'https://via.placeholder.com/400'}"
           alt="${producto.name}"
         >
       </div>
@@ -159,7 +159,7 @@ async function renderRelacionados(productoActual) {
 
       card.innerHTML = `
         <img src="${
-          p.image ? API_URL + p.image : "https://via.placeholder.com/200"
+          p.image ? p.image : "https://via.placeholder.com/200"
         }">
         <p>${p.name}</p>
         <span>₲ ${Number(p.price).toLocaleString("es-PY")}</span>

@@ -82,7 +82,7 @@ async function renderCarrito() {
     div.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px;">
         <img
-          src="${producto.image ? API_URL + producto.image : "https://via.placeholder.com/80"}"
+          src="${producto.image ? producto.image : "https://via.placeholder.com/80"}"
           style="width:80px;height:80px;object-fit:cover;border-radius:8px;"
         />
         <div>
