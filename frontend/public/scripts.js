@@ -161,9 +161,13 @@ document.querySelectorAll(".category-card").forEach(card => {
     if (categoria === "Todos") {
       renderProductos(productosGlobales);
     } else {
+      // 👉 dividir múltiples categorías
+      const categorias = categoria.split(",").map(c => c.trim());
+
       const filtrados = productosGlobales.filter(p =>
-        p.category?.name === categoria
+        categorias.includes(p.category?.name)
       );
+
       renderProductos(filtrados);
     }
 
@@ -172,7 +176,6 @@ document.querySelectorAll(".category-card").forEach(card => {
     });
   });
 });
-
 // ============================
 // FILTRO OFERTAS
 // ============================
