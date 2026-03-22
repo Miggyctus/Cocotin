@@ -154,6 +154,10 @@ if (logo) {
 // ============================
 // FILTRADO POR CATEGORÍA
 // ============================
+function normalizar(str) {
+  return str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 document.querySelectorAll(".category-card").forEach(card => {
   card.addEventListener("click", () => {
     const categoria = card.dataset.category;
@@ -161,11 +165,12 @@ document.querySelectorAll(".category-card").forEach(card => {
     if (categoria === "Todos") {
       renderProductos(productosGlobales);
     } else {
-      // 👉 dividir múltiples categorías
       const categorias = categoria.split(",").map(c => c.trim());
 
       const filtrados = productosGlobales.filter(p =>
-        categorias.includes(p.category?.name)
+        categorias.some(cat =>
+          normalizar(cat) === normalizar(p.category?.name)
+        )
       );
 
       renderProductos(filtrados);
