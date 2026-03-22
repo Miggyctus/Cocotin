@@ -155,7 +155,11 @@ if (logo) {
 // FILTRADO POR CATEGORÍA
 // ============================
 function normalizar(str) {
-  return str?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  return str
+    ?.toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
 }
 
 document.querySelectorAll(".category-card").forEach(card => {
@@ -165,13 +169,14 @@ document.querySelectorAll(".category-card").forEach(card => {
     if (categoria === "Todos") {
       renderProductos(productosGlobales);
     } else {
-      const categorias = categoria.split(",").map(c => c.trim());
+      const categorias = categoria.split(",").map(c => normalizar(c));
 
-      const filtrados = productosGlobales.filter(p =>
-        categorias.some(cat =>
-          normalizar(cat) === normalizar(p.category?.name)
-        )
-      );
+      const filtrados = productosGlobales.filter(p => {
+        const catProducto = normalizar(p.category?.name);
+        return categorias.includes(catProducto);
+      });
+
+      console.log("Filtrados:", filtrados); // 👈 debug
 
       renderProductos(filtrados);
     }
