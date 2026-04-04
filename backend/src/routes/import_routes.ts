@@ -46,12 +46,31 @@ function parsePrice(price: any): number {
 // 🔧 helper URL
 function isValidUrl(url: any): boolean {
   if (typeof url !== "string") return false;
-  return /^https?:\/\//i.test(url.trim());
+  return /^https?:\/\//i.test(String(url).trim());
 }
 
 function normalizeUrl(url: any): string | null {
-  if (!isValidUrl(url)) return null;
-  return String(url).trim();
+  if (typeof url !== "string") return null;
+  let cleaned = String(url).trim();
+
+  if (/^www\./i.test(cleaned)) {
+    cleaned = `https://${cleaned}`;
+  }
+
+  return isValidUrl(cleaned) ? cleaned : null;
+}
+
+function extractCellValue(value: any): any {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" || typeof value === "boolean") return value;
+  if (typeof value === "object") {
+    if (value.t === "s" && typeof value.v === "string") return value.v.trim();
+    if (value.l && typeof value.l.Target === "string") return value.l.Target.trim();
+    if (value.v !== undefined) return extractCellValue(value.v);
+    return undefined;
+  }
+  return undefined;
 }
 
 function normalizeKey(key: string): string {
@@ -59,7 +78,7 @@ function normalizeKey(key: string): string {
     .trim()
     .normalize("NFD")
     .replace(/\p{Diacritic}/gu, "")
-    .replace(/[\s_]+/g, " ")
+    .replace(/[\s_\-]+/g, " ")
     .toLowerCase();
 }
 
@@ -73,7 +92,7 @@ function normalizeRow(row: any): any {
 
 function getRowValue(row: any, ...keys: string[]) {
   for (const key of keys) {
-    const value = row[normalizeKey(key)];
+    const value = extractCellValue(row[normalizeKey(key)]);
     if (value === undefined || value === null) continue;
     if (typeof value === "string") {
       const trimmed = value.trim();
@@ -182,10 +201,10 @@ router.post(
             continue;
           }
 
-          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "descripcion", "description", "Description");
-          const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price");
-          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK");
-          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl");
+          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "description", "Description", "desc");
+          const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price", "precio_unitario", "precio unitario", "unitprice");
+          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK", "cantidad", "Cantidad");
+          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl", "link", "Link");
 
           const categoryId = await resolveCategoryId(row);
 

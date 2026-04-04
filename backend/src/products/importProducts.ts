@@ -177,10 +177,10 @@ router.post(
             continue;
           }
 
-          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "description", "Description");
-          const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price");
-          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK");
-          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl");
+          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "description", "Description", "desc");
+          const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price", "precio_unitario", "precio unitario", "unitprice");
+          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK", "cantidad", "Cantidad");
+          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl", "link", "Link");
 
           const stock = Number(stockRaw ?? 0);
           const categoryId = await resolveCategoryId(row);
