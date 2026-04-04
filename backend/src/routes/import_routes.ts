@@ -65,8 +65,10 @@ function extractCellValue(value: any): any {
   if (typeof value === "string") return value.trim();
   if (typeof value === "number" || typeof value === "boolean") return value;
   if (typeof value === "object") {
-    if (value.t === "s" && typeof value.v === "string") return value.v.trim();
+    if (typeof value.text === "string") return value.text.trim();
+    if (typeof value.hyperlink === "string") return value.hyperlink.trim();
     if (value.l && typeof value.l.Target === "string") return value.l.Target.trim();
+    if (value.t === "s" && typeof value.v === "string") return value.v.trim();
     if (value.v !== undefined) return extractCellValue(value.v);
     return undefined;
   }
@@ -77,7 +79,7 @@ function normalizeKey(key: string): string {
   return String(key)
     .trim()
     .normalize("NFD")
-    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\s_\-]+/g, " ")
     .toLowerCase();
 }
@@ -105,42 +107,47 @@ function getRowValue(row: any, ...keys: string[]) {
 }
 
 function getCategoryValue(row: any) {
-  const raw =
-    row.category ??
-    row.Category ??
-    row.Categoria ??
-    row.CATEGORIA ??
-    row.Categoría ??
-    row.CATEGORÍA ??
-    row.Categories ??
-    row.categories ??
-    row.categoryName ??
-    row.categoryname ??
-    row["category name"] ??
-    row["Category Name"] ??
-    row["categoria "] ??
-    row["Categoria "] ??
-    row["CATEGORIA "];
+  const value = getRowValue(
+    row,
+    "category",
+    "Categoria",
+    "CATEGORIA",
+    "Categoría",
+    "Categories",
+    "categories",
+    "categoryName",
+    "category name",
+    "categoria",
+    "categoria name",
+    "categoria nombre",
+    "cat",
+    "categoria_id"
+  );
 
-  if (raw === undefined || raw === null) {
+  if (value === undefined || value === null) {
     return null;
   }
 
-  const value = String(raw).trim();
-  return value === "" ? null : value;
+  const trimmed = String(value).trim();
+  return trimmed === "" ? null : trimmed;
 }
 
 function getCategoryIdValue(row: any) {
-  const raw =
-    row.categoriesID ??
-    row.categoriesId ??
-    row.categoryID ??
-    row.categoryId ??
-    row.category_id ??
-    row.categories_id ??
-    row["categoriesID "] ??
-    row["category ID"] ??
-    row["category id"];
+  const raw = getRowValue(
+    row,
+    "categoryId",
+    "categoryID",
+    "categoriesID",
+    "categoriesId",
+    "category id",
+    "category id",
+    "category_id",
+    "categories_id",
+    "categoria id",
+    "categoria_id",
+    "catid",
+    "cat_id"
+  );
 
   if (raw === undefined || raw === null || raw === "") {
     return null;
