@@ -16,15 +16,34 @@ function isValidUrl(url: any): boolean {
   return typeof url === "string" && url.startsWith("http");
 }
 
+function getRowValue(row: any, ...keys: string[]) {
+  for (const key of keys) {
+    const value = row[key];
+    if (value === undefined || value === null) continue;
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (trimmed !== "") return trimmed;
+    } else {
+      return value;
+    }
+  }
+  return undefined;
+}
+
 function getCategoryValue(row: any) {
   const raw =
     row.category ??
+    row.Category ??
     row.Categoria ??
     row.CATEGORIA ??
+    row.Categoría ??
+    row.CATEGORÍA ??
     row.Categories ??
     row.categories ??
     row.categoryName ??
     row.categoryname ??
+    row["category name"] ??
+    row["Category Name"] ??
     row['categoria '] ??
     row['Categoria '] ??
     row['CATEGORIA '];
@@ -99,29 +118,27 @@ router.post(
 
       for (const row of data as any[]) {
         try {
-          const codigo = String(row.codigo || "").trim();
+          const codigo = String(getRowValue(row, "codigo", "Codigo", "CODIGO", "barcode", "Barcode", "BARCODE") ?? "").trim();
           if (!codigo) {
             errors++;
             continue;
           }
 
-          // 🔥 STOCK robusto
-          const stock = Number(row.stock ?? row.Stock ?? 0);
+          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "description", "Description");
+          const priceRaw = getRowValue(row, "precio", "Precio", "price", "Price");
+          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK");
+          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image");
 
-          // 🔥 DESCRIPCIÓN segura
-          const description = row.descripcion
-            ? String(row.descripcion).slice(0, 10000)
-            : null;
-
+          const stock = Number(stockRaw ?? 0);
           const categoryId = await resolveCategoryId(row);
           console.log("📂 Procesando categoría ID:", categoryId);
 
           const productoData = {
-            name: row.nombre || "Sin nombre",
-            description,
-            price: parsePrice(row.precio),
+            name: String(getRowValue(row, "nombre", "Nombre", "name", "Name") ?? "Sin nombre").trim() || "Sin nombre",
+            description: descriptionRaw ? String(descriptionRaw).slice(0, 10000) : null,
+            price: parsePrice(priceRaw),
             stock,
-            image: isValidUrl(row.imagen) ? row.imagen : null,
+            image: isValidUrl(imageRaw) ? String(imageRaw) : null,
             isActive: true,
             barcode: codigo,
             categoryId

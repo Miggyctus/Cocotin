@@ -19,15 +19,34 @@ function isValidUrl(url: any): boolean {
   return typeof url === "string" && url.startsWith("http");
 }
 
+function getRowValue(row: any, ...keys: string[]) {
+  for (const key of keys) {
+    const value = row[key];
+    if (value === undefined || value === null) continue;
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (trimmed !== "") return trimmed;
+    } else {
+      return value;
+    }
+  }
+  return undefined;
+}
+
 function getCategoryValue(row: any) {
   const raw =
     row.category ??
+    row.Category ??
     row.Categoria ??
     row.CATEGORIA ??
+    row.Categoría ??
+    row.CATEGORÍA ??
     row.Categories ??
     row.categories ??
     row.categoryName ??
     row.categoryname ??
+    row["category name"] ??
+    row["Category Name"] ??
     row["categoria "] ??
     row["Categoria "] ??
     row["CATEGORIA "];
@@ -104,20 +123,25 @@ router.post(
 
       for (const row of data as any[]) {
         try {
-          const codigo = String(row.codigo || row.Codigo || row.barcode || row.Barcode || "").trim();
+          const codigo = String(getRowValue(row, "codigo", "Codigo", "CODIGO", "barcode", "Barcode", "BARCODE") ?? "").trim();
           if (!codigo) {
             errors++;
             continue;
           }
 
+          const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "descripcion", "description", "Description");
+          const priceRaw = getRowValue(row, "precio", "Precio", "price", "Price");
+          const stockRaw = getRowValue(row, "stock", "Stock", "STOCK");
+          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image");
+
           const categoryId = await resolveCategoryId(row);
 
           const productoData = {
-            name: row.nombre || row.name || "Sin nombre",
-            description: row.descripcion || row.description || null,
-            price: parsePrice(row.precio ?? row.price),
-            stock: Math.floor(Number(row.stock ?? row.Stock ?? 0)),
-            image: isValidUrl(row.imagen ?? row.image) ? (row.imagen || row.image) : null,
+            name: String(getRowValue(row, "nombre", "Nombre", "name", "Name") ?? "Sin nombre").trim() || "Sin nombre",
+            description: descriptionRaw ? String(descriptionRaw).slice(0, 10000) : null,
+            price: parsePrice(priceRaw),
+            stock: Math.floor(Number(stockRaw ?? 0)),
+            image: isValidUrl(imageRaw) ? String(imageRaw) : null,
             isActive: true,
             barcode: codigo,
             categoryId
