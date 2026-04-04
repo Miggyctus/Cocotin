@@ -54,9 +54,26 @@ function normalizeUrl(url: any): string | null {
   return String(url).trim();
 }
 
+function normalizeKey(key: string): string {
+  return String(key)
+    .trim()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[\s_]+/g, " ")
+    .toLowerCase();
+}
+
+function normalizeRow(row: any): any {
+  const normalized: any = {};
+  for (const key of Object.keys(row)) {
+    normalized[normalizeKey(key)] = row[key];
+  }
+  return normalized;
+}
+
 function getRowValue(row: any, ...keys: string[]) {
   for (const key of keys) {
-    const value = row[key];
+    const value = row[normalizeKey(key)];
     if (value === undefined || value === null) continue;
     if (typeof value === "string") {
       const trimmed = value.trim();
@@ -156,9 +173,10 @@ router.post(
       let updated = 0;
       let errors = 0;
 
-      for (const row of data as any[]) {
+      for (const rawRow of data as any[]) {
+        const row = normalizeRow(rawRow);
         try {
-          const codigo = String(getRowValue(row, "codigo", "Codigo", "CODIGO", "barcode", "Barcode", "BARCODE") ?? "").trim();
+          const codigo = String(getRowValue(row, "codigo", "cod", "codigo de barras", "barcode", "bar code", "bar_code") ?? "").trim();
           if (!codigo) {
             errors++;
             continue;
