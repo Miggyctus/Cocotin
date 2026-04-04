@@ -4,15 +4,15 @@ let pedidosCache = [];
 
 
 function getImageUrl(image) {
-  if (!image) return null;
+  if (!image) return "https://via.placeholder.com/400";
 
-  // 🔥 si es URL externa
+  // 🔥 SI ES LINK (http/https)
   if (image.startsWith("http")) {
     return image;
   }
 
-  // 🔥 si es local
-  return API_URL + image;
+  // 🔥 SI ES LOCAL
+  return image;
 }
 
 if (!TOKEN) {
