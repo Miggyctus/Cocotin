@@ -9,11 +9,46 @@ const upload = multer({ dest: "uploads/" });
 
 // 🔧 helpers
 function parsePrice(price: any): number {
-  return Number(price?.toString().replace(/,/g, "") || 0);
+  if (price === undefined || price === null || price === "") {
+    return 0;
+  }
+
+  let raw = String(price).trim();
+  raw = raw.replace(/[\s\u00A0]/g, "");
+  raw = raw.replace(/[^0-9.,\-]/g, "");
+
+  if (raw === "" || raw === "." || raw === ",") {
+    return 0;
+  }
+
+  const commaCount = (raw.match(/,/g) || []).length;
+  const dotCount = (raw.match(/\./g) || []).length;
+
+  if (commaCount > 0 && dotCount > 0) {
+    const decimalSeparator = raw.lastIndexOf(",") > raw.lastIndexOf(".") ? "," : ".";
+    raw = raw.replace(new RegExp(`[^0-9${decimalSeparator}\-]`, "g"), "");
+    raw = raw.replace(decimalSeparator, ".");
+  } else if (commaCount > 0) {
+    const lastCommaDistance = raw.length - raw.lastIndexOf(",") - 1;
+    if (lastCommaDistance === 3) {
+      raw = raw.replace(/,/g, "");
+    } else {
+      raw = raw.replace(/,/g, ".");
+    }
+  }
+
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function isValidUrl(url: any): boolean {
-  return typeof url === "string" && url.startsWith("http");
+  if (typeof url !== "string") return false;
+  return /^https?:\/\//i.test(url.trim());
+}
+
+function normalizeUrl(url: any): string | null {
+  if (!isValidUrl(url)) return null;
+  return String(url).trim();
 }
 
 function getRowValue(row: any, ...keys: string[]) {
@@ -125,9 +160,9 @@ router.post(
           }
 
           const descriptionRaw = getRowValue(row, "descripcion", "Descripcion", "Descripción", "description", "Description");
-          const priceRaw = getRowValue(row, "precio", "Precio", "price", "Price");
+          const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price");
           const stockRaw = getRowValue(row, "stock", "Stock", "STOCK");
-          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image");
+          const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl");
 
           const stock = Number(stockRaw ?? 0);
           const categoryId = await resolveCategoryId(row);
@@ -138,7 +173,7 @@ router.post(
             description: descriptionRaw ? String(descriptionRaw).slice(0, 10000) : null,
             price: parsePrice(priceRaw),
             stock,
-            image: isValidUrl(imageRaw) ? String(imageRaw) : null,
+            image: normalizeUrl(imageRaw),
             isActive: true,
             barcode: codigo,
             categoryId
