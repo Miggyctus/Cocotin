@@ -9,7 +9,7 @@ function getImageUrl(image) {
   }
 
   // 🔥 SI ES LOCAL
-  return `${API_URL}${image}`;
+  return image;
 }
 
 // ============================
