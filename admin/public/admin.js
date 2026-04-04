@@ -3,6 +3,18 @@ const TOKEN = localStorage.getItem("token");
 let pedidosCache = [];
 
 
+function getImageUrl(image) {
+  if (!image) return null;
+
+  // 🔥 si es URL externa
+  if (image.startsWith("http")) {
+    return image;
+  }
+
+  // 🔥 si es local
+  return API_URL + image;
+}
+
 if (!TOKEN) {
   window.location.href = "login.html";
 }
@@ -58,7 +70,7 @@ async function cargarProductosAdmin() {
           <td>
             ${
               producto.image
-                ? `<img src="https://cocotin.com.py${producto.image}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
+              ? `<img src="${getImageUrl(producto.image)}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
                 : "-"
             }
           </td>
@@ -188,7 +200,7 @@ async function editarProducto(id) {
 
   if (producto.image) {
     const img = document.getElementById("preview-imagen");
-    img.src = `https://cocotin.com.py${producto.image}`;
+    img.src = getImageUrl(producto.image);
     img.style.display = "block";
   }
 
@@ -404,6 +416,49 @@ async function cargarEstadisticas() {
 
   } catch (err) {
     console.error(err);
+  }
+}
+
+async function subirExcel() {
+  const fileInput = document.getElementById("excelFile");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    alert("Seleccioná un archivo Excel primero");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch(`${API_URL}/import`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + TOKEN
+      },
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Error importando");
+    }
+
+    alert(`
+      Importación completada 🚀
+      ✔️ Creados: ${data.resumen.creados}
+      🔄 Actualizados: ${data.resumen.actualizados}
+      ❌ Errores: ${data.resumen.errores}
+    `);
+
+    // 🔥 refresca productos
+    cargarProductosAdmin();
+
+  } catch (err) {
+    console.error(err);
+    alert("Error al importar Excel");
   }
 }
 

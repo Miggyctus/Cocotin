@@ -5,6 +5,7 @@ import authRoutes from "./routes/auth_routes";
 import productRoutes from "./products/product_routes";
 import orderRoutes from "./routes/order_routes";
 import path from "path";
+import importRoutes from "./routes/import_routes";
 import { getOrders, getStats } from "./controllers/order_controller";
 
 
@@ -15,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/products", productRoutes);
-
+app.use("/import", importRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 

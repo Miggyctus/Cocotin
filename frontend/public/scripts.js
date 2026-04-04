@@ -1,5 +1,17 @@
 const API_URL = "/api";
 
+function getImageUrl(image) {
+  if (!image) return "https://via.placeholder.com/400";
+
+  // 🔥 SI ES LINK (http/https)
+  if (image.startsWith("http")) {
+    return image;
+  }
+
+  // 🔥 SI ES LOCAL
+  return `${API_URL}${image}`;
+}
+
 // ============================
 // ESTADO GLOBAL
 // ============================
@@ -53,7 +65,7 @@ function crearProductCard(producto) {
     
     <div class="product-image">
       <img 
-        src="${producto.image ? producto.image : 'https://via.placeholder.com/300'}" 
+        src="${getImageUrl(producto.image)}"
         alt="${producto.name}"
       >
     </div>
@@ -211,7 +223,7 @@ function verProducto(id) {
 
   const html = `
     <img 
-      src="${producto.image ? producto.image : 'https://via.placeholder.com/300'}"
+      src="${getImageUrl(producto.image)}"
       style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;"
     >
     <h2>${producto.name}</h2>

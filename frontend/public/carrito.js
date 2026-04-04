@@ -1,5 +1,17 @@
 const API_URL = "/api";
 
+function getImageUrl(image) {
+  if (!image) return "https://via.placeholder.com/400";
+
+  // 🔥 SI ES LINK (http/https)
+  if (image.startsWith("http")) {
+    return image;
+  }
+
+  // 🔥 SI ES LOCAL
+  return `${API_URL}${image}`;
+}
+
 /* =========================
    Carrito helpers
 ========================= */
@@ -82,7 +94,7 @@ async function renderCarrito() {
     div.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px;">
         <img
-          src="${producto.image ? producto.image : "https://via.placeholder.com/80"}"
+          src="${getImageUrl(producto.image)}"
           style="width:80px;height:80px;object-fit:cover;border-radius:8px;"
         />
         <div>

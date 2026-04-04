@@ -2,6 +2,18 @@ const API_URL = "/api";
 let productosGlobal = [];
 document.addEventListener("DOMContentLoaded", cargarProducto);
 
+function getImageUrl(image) {
+  if (!image) return "https://via.placeholder.com/400";
+
+  // 🔥 SI ES LINK (http/https)
+  if (image.startsWith("http")) {
+    return image;
+  }
+
+  // 🔥 SI ES LOCAL
+  return `${API_URL}${image}`;
+}
+
 async function cargarProducto() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get("id");
@@ -59,7 +71,7 @@ function renderProducto(producto) {
     <div class="producto-page">
       <div class="producto-image">
         <img 
-          src="${producto.image ? producto.image : 'https://via.placeholder.com/400'}"
+          src="${getImageUrl(producto.image)}"
           alt="${producto.name}"
         >
       </div>
@@ -158,9 +170,7 @@ async function renderRelacionados(productoActual) {
       card.className = "related-card";
 
       card.innerHTML = `
-        <img src="${
-          p.image ? p.image : "https://via.placeholder.com/200"
-        }">
+        <img src="${getImageUrl(p.image)}">
         <p>${p.name}</p>
         <span>₲ ${Number(p.price).toLocaleString("es-PY")}</span>
       `;
