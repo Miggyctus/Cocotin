@@ -79,10 +79,6 @@ function crearProductCard(producto) {
         ${producto.name}
       </h3>
 
-      <p class="product-description">
-        ${producto.description ?? ""}
-      </p>
-
       <div class="product-footer">
         <div class="product-price">
           <span class="price-current">
