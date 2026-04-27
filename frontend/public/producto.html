@@ -5,20 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Producto - Cocotin</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>🚚 Envíos a todo el país</span>
+  <span>📞 Atención al cliente: +595 984 680 361</span>
+  <span>🕐 Lun–Sáb 8:00–19:00</span>
+</div>
+
+<!-- HEADER -->
 <header class="header">
-  <div class="header-content">
+  <div class="header-main">
     <div class="logo" onclick="window.location.href='index.html'">
-      COCOTIN
+      <span class="logo-text">COCOTIN</span>
+      <span class="logo-sub">pañalería</span>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search" placeholder="Buscar productos, marcas y más..." />
+      <button class="search-btn" onclick="window.location.href='index.html'">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="nosotros.html" class="header-action-link">
+        <span class="action-icon">ℹ️</span>
+        <span class="action-label">Nosotros</span>
+      </a>
+      <a href="https://wa.me/595984680361" target="_blank" class="header-action-link">
+        <span class="action-icon">💬</span>
+        <span class="action-label">WhatsApp</span>
+      </a>
+      <div class="cart-btn action-btn" onclick="window.location.href='carrito.html'">
+        <span class="action-icon">🛒</span>
+        <span class="action-label">Carrito</span>
+        <span class="cart-badge" id="cart-badge">!</span>
+      </div>
     </div>
   </div>
+
+  <!-- NAV BAR -->
+  <nav class="cat-nav">
+    <div class="cat-nav-inner">
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">✨ Todos</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧷 Pañales</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧴 Higiene</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🍼 Alimentación</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👶 Cuidado</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧸 Juguetes</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👕 Textil</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🏠 Hogar</div>
+      <div class="cat-nav-item ofertas-item" onclick="window.location.href='index.html'">🔥 Ofertas</div>
+    </div>
+  </nav>
 </header>
 
 <main class="container">
   <div id="producto-detalle"></div>
 </main>
+
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>COCOTIN</h3>
+      <p>Tu tienda de confianza para el cuidado del bebé</p>
+    </div>
+    <div class="footer-section">
+      <h4>Ayuda</h4>
+      <a href="#">Preguntas frecuentes</a>
+      <a href="#">Envíos y devoluciones</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-section">
+      <h4>Síguenos</h4>
+      <div class="social-links">
+        <a href="https://www.facebook.com/share/1CCoaNqBZM/?mibextid=wwXIfr" target="_blank">Facebook</a>
+        <a href="https://www.instagram.com/cocotin_py?igsh=ZTE3dmc1cTN5NW05" target="_blank">Instagram</a>
+        <a href="https://wa.me/595984680361" target="_blank">WhatsApp Casa central</a>
+        <a href="https://wa.me/595983366761" target="_blank">WhatsApp Sucursal Herrera</a>
+        <a href="https://wa.me/595974216695" target="_blank">WhatsApp Sucursal Japón</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Cocotin Pañalería. Todos los derechos reservados.</p>
+  </div>
+</footer>
 
 <script src="producto.js"></script>
 </body>

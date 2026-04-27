@@ -2,81 +2,194 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Carrito - Cocotin</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>🚚 Envíos a todo el país</span>
+  <span>📞 Atención al cliente: +595 984 680 361</span>
+  <span>🕐 Lun–Sáb 8:00–19:00</span>
+</div>
+
+<!-- HEADER -->
 <header class="header">
-  <div class="header-content">
-    <div class="logo" onclick="location.href='index.html'">COCOTIN</div>
+  <div class="header-main">
+    <div class="logo" onclick="window.location.href='index.html'">
+      <span class="logo-text">COCOTIN</span>
+      <span class="logo-sub">pañalería</span>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search" placeholder="Buscar productos, marcas y más..." />
+      <button class="search-btn" onclick="window.location.href='index.html'">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="nosotros.html" class="header-action-link">
+        <span class="action-icon">ℹ️</span>
+        <span class="action-label">Nosotros</span>
+      </a>
+      <a href="https://wa.me/595984680361" target="_blank" class="header-action-link">
+        <span class="action-icon">💬</span>
+        <span class="action-label">WhatsApp</span>
+      </a>
+      <div class="cart-btn action-btn" onclick="window.location.href='carrito.html'">
+        <span class="action-icon">🛒</span>
+        <span class="action-label">Carrito</span>
+        <span class="cart-badge" id="cart-badge">!</span>
+      </div>
+    </div>
   </div>
+
+  <!-- NAV BAR -->
+  <nav class="cat-nav">
+    <div class="cat-nav-inner">
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">✨ Todos</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧷 Pañales</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧴 Higiene</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🍼 Alimentación</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👶 Cuidado</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧸 Juguetes</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👕 Textil</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🏠 Hogar</div>
+      <div class="cat-nav-item ofertas-item" onclick="window.location.href='index.html'">🔥 Ofertas</div>
+    </div>
+  </nav>
 </header>
 
-<main class="container">
-  <h1>Tu carrito</h1>
-
-  <div id="carrito-contenido">
-    <!-- carrito.js va a renderizar acá -->
+<!-- BREADCRUMB -->
+<div class="page-breadcrumb">
+  <div class="page-breadcrumb-inner">
+    <span onclick="window.location.href='index.html'">Inicio</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-active">Carrito</span>
   </div>
-
-  <p id="carrito-total" style="font-weight:700; margin-top: 20px;"></p>
-
-  <h2>Datos de compra</h2>
-
-<div class="checkout-wrapper">
-
-  <div class="checkout-form-container">
-    <form id="checkout-form" class="checkout-form">
-      
-      <div class="form-group">
-        <input type="text" id="customer-name" placeholder="Nombre completo" required />
-      </div>
-
-      <div class="form-group">
-        <input type="tel" id="customer-phone" placeholder="Teléfono" required />
-      </div>
-
-      <div class="form-group">
-        <input type="email" id="customer-email" placeholder="Correo electrónico" required />
-      </div>
-
-      <div class="form-group">
-        <input type="text" id="delivery-address" placeholder="Dirección de entrega" required />
-      </div>
-
-      <div class="form-group">
-        <select id="delivery-method" required>
-          <option value="">Seleccionar método de entrega</option>
-          <option value="delivery">Delivery</option>
-          <option value="pickup">Retiro en local</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <textarea id="order-notes" rows="3" placeholder="Notas (opcional)"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label>Método de pago *</label>
-        <select id="metodo-pago" required>
-          <option value="TRANSFER">Transferencia bancaria</option>
-          <option value="CASH">Efectivo</option>
-          <option value="CARD">Tarjeta de debito/credito</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn-primary">
-        Finalizar compra
-      </button>
-
-    </form>
-  </div>
-
-  <div id="checkout-result" class="checkout-result"></div>
-
 </div>
+
+<!-- MAIN -->
+<main class="carrito-wrapper">
+
+  <div class="carrito-left">
+    <div class="carrito-header-box">
+      <h1>🛒 Tu carrito</h1>
+      <a href="index.html" class="seguir-comprando">← Seguir comprando</a>
+    </div>
+
+    <div id="carrito-contenido">
+      <!-- carrito.js renderiza acá -->
+    </div>
+
+    <div class="carrito-total-bar" id="carrito-total-bar" style="display:none;">
+      <span>Total del pedido:</span>
+      <strong id="carrito-total"></strong>
+    </div>
+  </div>
+
+  <div class="carrito-right">
+    <div class="checkout-box">
+      <h2>Datos de compra</h2>
+
+      <form id="checkout-form">
+
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" id="customer-name" placeholder="Ej: Ana García" required />
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono *</label>
+          <input type="tel" id="customer-phone" placeholder="Ej: 0984 000 000" required />
+        </div>
+
+        <div class="form-group">
+          <label>Correo electrónico *</label>
+          <input type="email" id="customer-email" placeholder="tu@email.com" required />
+        </div>
+
+        <div class="form-group">
+          <label>Dirección de entrega *</label>
+          <input type="text" id="delivery-address" placeholder="Calle, número, ciudad" required />
+        </div>
+
+        <div class="form-group">
+          <label>Método de entrega *</label>
+          <select id="delivery-method" required>
+            <option value="">Seleccionar...</option>
+            <option value="delivery">Delivery</option>
+            <option value="pickup">Retiro en local</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Notas (opcional)</label>
+          <textarea id="order-notes" rows="2" placeholder="Indicaciones especiales..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Método de pago *</label>
+          <div class="pago-options">
+            <label class="pago-option">
+              <input type="radio" name="pago" value="TRANSFER" checked />
+              <span>🏦 Transferencia</span>
+            </label>
+            <label class="pago-option">
+              <input type="radio" name="pago" value="CASH" />
+              <span>💵 Efectivo</span>
+            </label>
+            <label class="pago-option">
+              <input type="radio" name="pago" value="CARD" />
+              <span>💳 Tarjeta</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-finalizar">
+          Confirmar pedido →
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Preview y resultado de pago -->
+    <div id="checkout-result" class="checkout-result"></div>
+  </div>
+
 </main>
+
+<!-- FOOTER -->
+<footer class="footer" id="footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>COCOTIN</h3>
+      <p>Tu tienda de confianza para el cuidado del bebé</p>
+    </div>
+    <div class="footer-section">
+      <h4>Ayuda</h4>
+      <a href="#">Preguntas frecuentes</a>
+      <a href="#">Envíos y devoluciones</a>
+      <a href="#">Contacto</a>
+    </div>
+    <div class="footer-section">
+      <h4>Síguenos</h4>
+      <div class="social-links">
+        <a href="https://www.facebook.com/share/1CCoaNqBZM/?mibextid=wwXIfr" target="_blank">Facebook</a>
+        <a href="https://www.instagram.com/cocotin_py?igsh=ZTE3dmc1cTN5NW05" target="_blank">Instagram</a>
+        <a href="https://wa.me/595984680361" target="_blank">WhatsApp Casa central</a>
+        <a href="https://wa.me/595983366761" target="_blank">WhatsApp Sucursal Herrera</a>
+        <a href="https://wa.me/595974216695" target="_blank">WhatsApp Sucursal Japón</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Cocotin Pañalería. Todos los derechos reservados.</p>
+  </div>
+</footer>
 
 <script src="carrito.js"></script>
 </body>

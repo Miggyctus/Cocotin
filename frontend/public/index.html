@@ -6,6 +6,8 @@
   <title>Cocotin Pañalería</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
 <!-- Modal Producto -->
@@ -18,107 +20,143 @@
 
 <body>
 
-<header class="header">
-  <div class="header-content">
-    <div class="logo">COCOTIN</div>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>🚚 Envíos a todo el país</span>
+  <span>📞 Atención al cliente: +595 984 680 361</span>
+  <span>🕐 Lun–Sáb 8:00–19:00</span>
+</div>
 
-    <nav class="nav">
-      <a href="#productos" class="nav-link">Productos</a>
-      <!--<a href="#" class="nav-link">Ofertas</a>
-      <a href="#" class="nav-link">Marcas</a>-->
-      <a href="nosotros.html" class="nav-link">Nosotros</a>
-      <a href="#footer" class="nav-link">Contacto</a>
-    </nav>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-main">
+    <div class="logo" onclick="window.location.href='index.html'">
+      <span class="logo-text">COCOTIN</span>
+      <span class="logo-sub">pañalería</span>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search" placeholder="Buscar productos, marcas y más..." />
+      <button class="search-btn">🔍</button>
+    </div>
 
     <div class="header-actions">
-      <div class="search-container">
-        <input 
-          type="text"
-          class="search"
-          placeholder="Buscar productos..."
-        />
-        <span class="search-icon">🔍</span>
-      </div>
-
-      <div class="actions">
-        <div class="action-btn" onclick="window.location.href='carrito.html'">
-          <span>🛒</span>
-          <span class="cart-badge">!</span>
-        </div>
+      <a href="nosotros.html" class="header-action-link">
+        <span class="action-label">Nosotros</span>
+      </a>
+      <a href="https://wa.me/595984680361" target="_blank" class="header-action-link">
+        <span class="action-label">WhatsApp</span>
+      </a>
+      <div class="action-btn cart-btn" onclick="window.location.href='carrito.html'">
+        <span class="action-icon">🛒</span>
+        <span class="action-label">Carrito</span>
+        <span class="cart-badge">!</span>
       </div>
     </div>
   </div>
+
+  <!-- CATEGORY NAV BAR -->
+  <nav class="cat-nav">
+    <div class="cat-nav-inner">
+      <div class="cat-nav-item active" data-main="Todos">
+        <span>✨ Todos</span>
+      </div>
+      <div class="cat-nav-item" data-main="Pañales">
+        <span>🧷 Pañales ▾</span>
+        <div class="cat-dropdown">
+          <a href="#" data-category="PAÑALES P/ BEBES">Pañales para bebés</a>
+          <a href="#" data-category="PAÑALES P/ ADULTOS">Pañales para adultos</a>
+        </div>
+      </div>
+      <div class="cat-nav-item" data-main="Higiene">
+        <span>🧴 Higiene ▾</span>
+        <div class="cat-dropdown">
+          <a href="#" data-category="HIGIENE Y CUIDADO PERSONAL">Higiene y cuidado personal</a>
+          <a href="#" data-category="COSMÉTICOS">Cosméticos</a>
+          <a href="#" data-category="FARMACIA">Farmacia</a>
+        </div>
+      </div>
+      <div class="cat-nav-item" data-main="Alimentación">
+        <span>🍼 Alimentación ▾</span>
+        <div class="cat-dropdown">
+          <a href="#" data-category="ALIMENTACIÓN DEL BEBÉ">Alimentación del bebé</a>
+          <a href="#" data-category="ALIMENTACIÓN">Alimentación general</a>
+          <a href="#" data-category="BOTELLAS TERMICAS">Botellas térmicas</a>
+        </div>
+      </div>
+      <div class="cat-nav-item" data-main="Cuidado">
+        <span>👶 Cuidado ▾</span>
+        <div class="cat-dropdown">
+          <a href="#" data-category="CUIDADO DEL BEBÉ">Cuidado del bebé</a>
+          <a href="#" data-category="MATERNIDAD Y LACTANCIA">Maternidad y lactancia</a>
+          <a href="#" data-category="ACCESORIOS">Accesorios</a>
+        </div>
+      </div>
+      <div class="cat-nav-item" data-main="Juguetes">
+        <span>🧸 Juguetes</span>
+      </div>
+      <div class="cat-nav-item" data-main="Textil">
+        <span>👕 Textil</span>
+      </div>
+      <div class="cat-nav-item" data-main="Hogar">
+        <span>🏠 Hogar</span>
+      </div>
+      <div class="cat-nav-item ofertas-item" data-main="Ofertas">
+        <span>🔥 Ofertas</span>
+      </div>
+    </div>
+  </nav>
 </header>
 
+<!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <!--<span class="hero-tag"></span>-->
     <h1>Todo lo que tu bebé necesita</h1>
     <p>Productos de calidad para el cuidado y bienestar de tu pequeño</p>
-    <button class="btn-primary"
-      onclick="document.querySelector('#productos').scrollIntoView({behavior:'smooth'})">
+    <button class="btn-primary" onclick="document.querySelector('#shop-layout').scrollIntoView({behavior:'smooth'})">
       Ver productos
     </button>
   </div>
+  <div class="hero-badges">
+    <div class="hero-badge">🚚 Envío rápido</div>
+    <div class="hero-badge">✅ Calidad garantizada</div>
+    <div class="hero-badge">💳 Múltiples medios de pago</div>
+  </div>
 </section>
 
-<main class="container">
+<!-- MAIN SHOP LAYOUT -->
+<div class="shop-wrapper" id="shop-layout">
 
-  <!-- Categorías -->
-    <section class="categories-section">
-
-      <div class="category-card" data-category="Todos">
-        <div class="category-icon">✨</div>
-        <h3>Todos</h3>
-      </div>
-
-      <div class="category-card" data-category="PAÑALES P/ BEBES,PAÑALES P/ ADULTOS">
-        <div class="category-icon">🧷</div>
-        <h3>Pañales</h3>
-      </div>
-
-      <div class="category-card" data-category="HIGIENE Y CUIDADO PERSONAL,COSMETICOS,FARMACIA">
-        <div class="category-icon">🧴</div>
-        <h3>Higiene</h3>
-      </div>
-
-      <div class="category-card" data-category="ALIMENTACION DEL BEBE,ALIMENTACION,BOTELLAS TERMICAS">
-        <div class="category-icon">🍼</div>
-        <h3>Alimentación</h3>
-      </div>
-
-      <div class="category-card" data-category="CUIDADO DEL BEBE,MATERNIDAD Y LACTANCIA">
-        <div class="category-icon">👶</div>
-        <h3>Cuidado</h3>
-      </div>
-
-      <div class="category-card" data-category="JUGUETERIA">
-        <div class="category-icon">🧸</div>
-        <h3>Juguetes</h3>
-      </div>
-
-    </section>
-  <!-- Productos -->
-  <section class="products-section" id="productos">
-    <div class="section-header">
-      <h2>Productos destacados</h2>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h3 id="sidebar-title">Todas las categorías</h3>
+    </div>
+    <div class="sidebar-links" id="sidebar-links">
+      <!-- Inyectado por JS -->
     </div>
 
-    <div class="products">
+    <!-- PROMO CARD EN SIDEBAR -->
+    <div class="sidebar-promo">
+      <p>¡Hasta 30% OFF!</p>
+      <span>en productos seleccionados</span>
+      <button class="btn-promo" id="btn-ofertas">Ver ofertas</button>
+    </div>
+  </aside>
+
+  <!-- PRODUCTS AREA -->
+  <main class="shop-main">
+    <div class="shop-toolbar">
+      <span class="results-count" id="results-count">Cargando productos...</span>
+      <div class="active-filter" id="active-filter"></div>
+    </div>
+
+    <section class="products" id="productos">
       <!-- scripts.js inyecta las cards -->
-    </div>
-  </section>
+    </section>
+  </main>
 
-  <!-- Banner promocional -->
-  <section class="promo-banner">
-    <div class="promo-content">
-      <h2>¡Ofertas especiales esta semana!</h2>
-      <p>Hasta 30% de descuento en productos seleccionados</p>
-      <button class="btn-secondary" id="btn-ofertas">Ver ofertas</button>
-    </div>
-  </section>
-
-</main>
+</div>
 
 <footer class="footer" id="footer">
   <div class="footer-content">

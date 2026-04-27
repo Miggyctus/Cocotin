@@ -1,135 +1,194 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nosotros - Cocotin Pañalería</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nosotros - Cocotin Pañalería</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- Header -->
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>🚚 Envíos a todo el país</span>
+  <span>📞 Atención al cliente: +595 984 680 361</span>
+  <span>🕐 Lun–Sáb 8:00–19:00</span>
+</div>
+
+<!-- HEADER -->
 <header class="header">
-    <div class="header-content">
-        <div class="logo">COCOTIN</div>
-
-        <nav class="nav">
-            <a href="index.html" class="nav-link">Inicio</a>
-            <a href="#" class="nav-link">Productos</a>
-            <!--<a href="#" class="nav-link">Ofertas</a>-->
-            <a href="#" class="nav-link">Contacto</a>
-        </nav>
-
-        <div class="header-actions">
-            <div class="search-container">
-                <input 
-                    type="text" 
-                    class="search"
-                    placeholder="Buscar productos..."
-                />
-                <span class="search-icon">🔍</span>
-            </div>
-
-            <div class="actions">
-                <div class="action-btn">
-                    <span>🛒</span>
-                    <span class="cart-badge">!</span>
-                </div>
-                <div class="action-btn">
-                    <span>👤</span>
-                </div>
-            </div>
-        </div>
+  <div class="header-main">
+    <div class="logo" onclick="window.location.href='index.html'">
+      <span class="logo-text">COCOTIN</span>
+      <span class="logo-sub">pañalería</span>
     </div>
+
+    <div class="search-container">
+      <input type="text" class="search" placeholder="Buscar productos, marcas y más..." />
+      <button class="search-btn" onclick="window.location.href='index.html'">🔍</button>
+    </div>
+
+    <div class="header-actions">
+      <a href="nosotros.html" class="header-action-link active-page">
+        <span class="action-icon">ℹ️</span>
+        <span class="action-label">Nosotros</span>
+      </a>
+      <a href="https://wa.me/595984680361" target="_blank" class="header-action-link">
+        <span class="action-icon">💬</span>
+        <span class="action-label">WhatsApp</span>
+      </a>
+      <div class="cart-btn action-btn" onclick="window.location.href='carrito.html'">
+        <span class="action-icon">🛒</span>
+        <span class="action-label">Carrito</span>
+        <span class="cart-badge">!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BAR -->
+  <nav class="cat-nav">
+    <div class="cat-nav-inner">
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">✨ Todos</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧷 Pañales</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧴 Higiene</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🍼 Alimentación</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👶 Cuidado</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🧸 Juguetes</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">👕 Textil</div>
+      <div class="cat-nav-item" onclick="window.location.href='index.html'">🏠 Hogar</div>
+      <div class="cat-nav-item ofertas-item" onclick="window.location.href='index.html'">🔥 Ofertas</div>
+    </div>
+  </nav>
 </header>
 
-<!-- Hero pequeño -->
-<section class="hero" style="padding: 40px 0;">
-    <div class="hero-content">
-        <h1>Sobre Nosotros</h1>
-        <p>Conocé más sobre nuestra historia, misión y valores</p>
-    </div>
+<!-- BREADCRUMB -->
+<div class="page-breadcrumb">
+  <div class="page-breadcrumb-inner">
+    <span onclick="window.location.href='index.html'">Inicio</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-active">Nosotros</span>
+  </div>
+</div>
+
+<!-- HERO PEQUEÑO -->
+<section class="page-hero">
+  <div class="page-hero-content">
+    <h1>Sobre Nosotros</h1>
+    <p>Conocé más sobre nuestra historia, misión y valores</p>
+  </div>
 </section>
 
-<!-- Contenido principal -->
-<main class="container">
+<!-- CONTENIDO -->
+<main class="nosotros-wrapper">
 
-    <section style="
-        background: white;
-        padding: var(--spacing-xl);
-        border-radius: var(--radius-lg);
-        margin-top: var(--spacing-xl);
-        margin-bottom: var(--spacing-xl);
-        border: 1px solid var(--color-border);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-    ">
+  <div class="nosotros-grid">
 
-        <h2 style="font-size: 28px; font-weight: 700; color: var(--color-dark); margin-bottom: var(--spacing-md);">
-            ¿Quiénes somos?
-        </h2>
-        <p style="font-size: 16px; color: var(--color-text-light); margin-bottom: var(--spacing-lg);">
-            En <strong>Cocotin Pañalería</strong> nos dedicamos a ofrecer productos de calidad 
-            para el bienestar y cuidado de los más pequeños. Nuestro objetivo es brindar 
-            comodidad, seguridad y confianza a las familias que nos eligen día a día.
-        </p>
+    <div class="nosotros-card">
+      <div class="nosotros-icon">👶</div>
+      <h2>¿Quiénes somos?</h2>
+      <p>
+        En <strong>Cocotin Pañalería</strong> nos dedicamos a ofrecer productos de calidad
+        para el bienestar y cuidado de los más pequeños. Nuestro objetivo es brindar
+        comodidad, seguridad y confianza a las familias que nos eligen día a día.
+      </p>
+    </div>
 
-        <h3 style="font-size: 22px; margin-bottom: var(--spacing-sm); color: var(--color-dark);">Nuestra misión</h3>
-        <p style="margin-bottom: var(--spacing-lg);">
-            Ser una tienda de referencia donde las familias encuentren todo lo necesario 
-            para sus bebés: pañales, higiene, alimentación, juguetes y más. Siempre 
-            priorizando calidad, buen precio y atención personalizada.
-        </p>
+    <div class="nosotros-card">
+      <div class="nosotros-icon">🎯</div>
+      <h2>Nuestra misión</h2>
+      <p>
+        Ser una tienda de referencia donde las familias encuentren todo lo necesario
+        para sus bebés: pañales, higiene, alimentación, juguetes y más. Siempre
+        priorizando calidad, buen precio y atención personalizada.
+      </p>
+    </div>
 
-        <h3 style="font-size: 22px; margin-bottom: var(--spacing-sm); color: var(--color-dark);">Nuestros valores</h3>
-        <ul style="margin-left: 20px; margin-bottom: var(--spacing-lg); color: var(--color-text-light); line-height: 1.8;">
-            <li>🌟 Compromiso con la calidad</li>
-            <li>🍼 Atención cercana y humana</li>
-            <li>🚚 Entregas rápidas y seguras</li>
-            <li>💗 Confianza y responsabilidad</li>
-        </ul>
+    <div class="nosotros-card">
+      <div class="nosotros-icon">💎</div>
+      <h2>Nuestros valores</h2>
+      <ul class="valores-list">
+        <li>🌟 Compromiso con la calidad</li>
+        <li>🍼 Atención cercana y humana</li>
+        <li>🚚 Entregas rápidas y seguras</li>
+        <li>💗 Confianza y responsabilidad</li>
+      </ul>
+    </div>
 
-        <h3 style="font-size: 22px; margin-bottom: var(--spacing-sm); color: var(--color-dark);">Nuestra historia</h3>
-        <p>
-            Cocotin nació con el propósito de hacer la vida de las familias más fácil. 
-            Empezamos con un pequeño local y hoy seguimos creciendo, siempre manteniendo 
-            la misma pasión y dedicación que en nuestros inicios.
-        </p>
+    <div class="nosotros-card">
+      <div class="nosotros-icon">📖</div>
+      <h2>Nuestra historia</h2>
+      <p>
+        Cocotin nació con el propósito de hacer la vida de las familias más fácil.
+        Empezamos con un pequeño local y hoy seguimos creciendo, siempre manteniendo
+        la misma pasión y dedicación que en nuestros inicios.
+      </p>
+    </div>
 
-    </section>
+  </div>
+
+  <!-- SUCURSALES -->
+  <div class="sucursales-section">
+    <h2>Nuestras sucursales</h2>
+    <div class="sucursales-grid">
+      <div class="sucursal-card">
+        <div class="sucursal-icon">🏪</div>
+        <h3>Casa Central</h3>
+        <p>Capiatá, Paraguay</p>
+        <a href="https://wa.me/595984680361" target="_blank" class="btn-sucursal">
+          💬 WhatsApp
+        </a>
+      </div>
+      <div class="sucursal-card">
+        <div class="sucursal-icon">🏪</div>
+        <h3>Sucursal Herrera</h3>
+        <p>Herrera, Paraguay</p>
+        <a href="https://wa.me/595983366761" target="_blank" class="btn-sucursal">
+          💬 WhatsApp
+        </a>
+      </div>
+      <div class="sucursal-card">
+        <div class="sucursal-icon">🏪</div>
+        <h3>Sucursal Japón</h3>
+        <p>Japón, Paraguay</p>
+        <a href="https://wa.me/595974216695" target="_blank" class="btn-sucursal">
+          💬 WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
 
 </main>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer class="footer">
-    <div class="footer-content">
-        <div class="footer-section">
-            <h3>COCOTIN</h3>
-            <p>Tu tienda de confianza para el cuidado del bebé</p>
-        </div>
-
-        <div class="footer-section">
-            <h4>Ayuda</h4>
-            <a href="#">Preguntas frecuentes</a>
-            <a href="#">Envíos y devoluciones</a>
-            <a href="#">Contacto</a>
-        </div>
-
-        <div class="footer-section">
-            <h4>Síguenos</h4>
-            <div class="social-links">
-                <a href="https://www.facebook.com/share/1CCoaNqBZM/?mibextid=wwXIfr" target="_blank">Facebook</a>
-                <a href="https://www.instagram.com/cocotin_py?igsh=ZTE3dmc1cTN5NW05" target="_blank">Instagram</a>
-                <a href="https://wa.me/595984680361" target="_blank">WhatsApp Casa central</a>
-                <a href="https://wa.me/595983366761" target="_blank">WhatsApp Sucursal Herrera</a>
-                <a href="https://wa.me/595974216695" target="_blank">WhatsApp Sucursal Japón</a>
-            </div>
-        </div>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>COCOTIN</h3>
+      <p>Tu tienda de confianza para el cuidado del bebé</p>
     </div>
-
-    <div class="footer-bottom">
-        <p>© 2025 Cocotin Pañalería. Todos los derechos reservados.</p>
+    <div class="footer-section">
+      <h4>Ayuda</h4>
+      <a href="#">Preguntas frecuentes</a>
+      <a href="#">Envíos y devoluciones</a>
+      <a href="#">Contacto</a>
     </div>
+    <div class="footer-section">
+      <h4>Síguenos</h4>
+      <div class="social-links">
+        <a href="https://www.facebook.com/share/1CCoaNqBZM/?mibextid=wwXIfr" target="_blank">Facebook</a>
+        <a href="https://www.instagram.com/cocotin_py?igsh=ZTE3dmc1cTN5NW05" target="_blank">Instagram</a>
+        <a href="https://wa.me/595984680361" target="_blank">WhatsApp Casa central</a>
+        <a href="https://wa.me/595983366761" target="_blank">WhatsApp Sucursal Herrera</a>
+        <a href="https://wa.me/595974216695" target="_blank">WhatsApp Sucursal Japón</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Cocotin Pañalería. Todos los derechos reservados.</p>
+  </div>
 </footer>
 
 </body>
