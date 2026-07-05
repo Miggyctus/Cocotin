@@ -17,6 +17,7 @@ app.use(express.json());
 
 app.use("/api/products", productRoutes);
 app.use("/import", importRoutes);
+app.use("/api/import", importRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
