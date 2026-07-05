@@ -192,18 +192,46 @@ function generarEfectivoHTML(data) {
     </div>`;
 }
 
-function generarTarjetaHTML(data) {
+function generarTarjetaExitoHTML(data) {
   return `
     <div class="payment-card">
       <div class="payment-header">
-        <h2>Pedido #${data.orderId} recibido</h2>
-        <span class="payment-status">Próximamente</span>
+        <h2>Pedido #${data.orderId} pagado ✅</h2>
+        <span class="payment-status" style="background:#d4edda;color:#155724;">Pago aprobado</span>
+      </div>
+      <div class="payment-total">
+        Total pagado: <strong>₲ ${Number(data.total).toLocaleString("es-PY")}</strong>
       </div>
       <div class="payment-section">
-        <p>💳 El pago con tarjeta estará disponible próximamente.</p>
-        <p style="margin-top:8px;">Por favor seleccioná transferencia o efectivo por ahora.</p>
+        <p>🎉 Tu pago fue procesado correctamente. Nuestro equipo se comunicará contigo para coordinar la entrega.</p>
       </div>
     </div>`;
+}
+
+function generarTarjetaCanceladaHTML() {
+  return `
+    <div class="payment-card">
+      <div class="payment-header">
+        <h2>Pago cancelado ❌</h2>
+        <span class="payment-status" style="background:#f8d7da;color:#721c24;">Cancelado</span>
+      </div>
+      <div class="payment-section">
+        <p>El pago fue cancelado. Tu pedido quedó guardado — podés intentar nuevamente o elegir otro método de pago.</p>
+        <p style="margin-top:8px;">Si tenés dudas, escribinos por WhatsApp.</p>
+      </div>
+      <a href="https://wa.me/595984680361" target="_blank" class="btn-whatsapp">Contactar por WhatsApp</a>
+    </div>`;
+}
+
+function loadBancardScript() {
+  return new Promise((resolve, reject) => {
+    if (window.Bancard) { resolve(); return; }
+    const script = document.createElement("script");
+    script.src = "https://vpos.infonet.com.py:8888/checkout/javascript/dist/bancard-checkout-4.0.0.js";
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
 }
 
 /* =========================
@@ -244,6 +272,57 @@ async function finalizarCompra(event) {
     }
 
     const data = await response.json();
+
+    // === Flujo CARD: iframe de Bancard ===
+    if (metodoPago === "CARD") {
+      const resultDiv = document.getElementById("checkout-result");
+      resultDiv.style.display = "block";
+      resultDiv.innerHTML = `<div class="payment-card"><p>⏳ Iniciando pasarela de pago...</p></div>`;
+      resultDiv.scrollIntoView({ behavior: "smooth" });
+
+      const payRes = await fetch(`${API_URL}/payment/initiate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: data.orderId }),
+      });
+
+      if (!payRes.ok) {
+        alert("No se pudo iniciar el pago con tarjeta. Intentá nuevamente o elegí otro método.");
+        return;
+      }
+
+      const { processId } = await payRes.json();
+
+      // Guardar en sessionStorage para mostrar éxito al volver
+      sessionStorage.setItem("pendingOrderId", data.orderId);
+      sessionStorage.setItem("pendingOrderTotal", data.total);
+
+      guardarCarrito([]);
+      await renderCarrito();
+
+      resultDiv.innerHTML = `
+        <div class="payment-card">
+          <h3 style="margin-bottom:16px;">💳 Completá tu pago con tarjeta</h3>
+          <div id="bancard-iframe-container"></div>
+        </div>`;
+
+      await loadBancardScript();
+
+      const styles = {
+        "form-background-color": "#ffffff",
+        "button-background-color": "#e91e8c",
+        "button-text-color": "#ffffff",
+        "button-border-color": "#e91e8c",
+        "input-background-color": "#f9f9f9",
+        "input-text-color": "#333333",
+        "input-placeholder-color": "#999999",
+      };
+
+      window.Bancard.Checkout.createForm("bancard-iframe-container", processId, styles);
+      return;
+    }
+
+    // === Flujo TRANSFER y CASH ===
     guardarCarrito([]);
     await renderCarrito();
     document.getElementById("checkout-form").reset();
@@ -255,10 +334,8 @@ async function finalizarCompra(event) {
     if (metodoPago === "TRANSFER") {
       resultDiv.innerHTML = generarTransferenciaHTML(data);
       iniciarContador(24 * 60 * 60);
-    } else if (metodoPago === "CASH") {
-      resultDiv.innerHTML = generarEfectivoHTML(data);
     } else {
-      resultDiv.innerHTML = generarTarjetaHTML(data);
+      resultDiv.innerHTML = generarEfectivoHTML(data);
     }
 
   } catch (err) {
@@ -299,7 +376,7 @@ function actualizarPreviewPago(metodo) {
     </div>`,
     CARD: `<div class="payment-card preview">
       <h3>💳 Pago con tarjeta</h3>
-      <p>Próximamente disponible.</p>
+      <p>Aceptamos tarjetas de crédito y débito. Al confirmar el pedido se abrirá la pasarela segura de Bancard.</p>
     </div>`,
   };
 
@@ -312,14 +389,29 @@ function actualizarPreviewPago(metodo) {
 document.addEventListener("DOMContentLoaded", () => {
   renderCarrito();
 
+  const params = new URLSearchParams(window.location.search);
+  const resultDiv = document.getElementById("checkout-result");
+
+  if (params.get("pago") === "ok") {
+    const orderId = sessionStorage.getItem("pendingOrderId");
+    const total = sessionStorage.getItem("pendingOrderTotal");
+    sessionStorage.removeItem("pendingOrderId");
+    sessionStorage.removeItem("pendingOrderTotal");
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = generarTarjetaExitoHTML({ orderId, total });
+    resultDiv.scrollIntoView({ behavior: "smooth" });
+  } else if (params.get("pago") === "cancelado") {
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = generarTarjetaCanceladaHTML();
+    resultDiv.scrollIntoView({ behavior: "smooth" });
+  }
+
   const form = document.getElementById("checkout-form");
   form.addEventListener("submit", finalizarCompra);
 
-  // Preview de pago con radio buttons
   document.querySelectorAll('input[name="pago"]').forEach(radio => {
     radio.addEventListener("change", () => actualizarPreviewPago(radio.value));
   });
 
-  // Mostrar preview inicial
   actualizarPreviewPago("TRANSFER");
 });

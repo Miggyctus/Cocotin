@@ -6,6 +6,7 @@ import productRoutes from "./products/product_routes";
 import orderRoutes from "./routes/order_routes";
 import path from "path";
 import importRoutes from "./routes/import_routes";
+import paymentRoutes from "./routes/payment_routes";
 import { getOrders, getStats } from "./controllers/order_controller";
 
 
@@ -27,6 +28,7 @@ app.get("/health", (_, res) => {
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/stats", orderRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.use("/api/auth", authRoutes);
 
