@@ -318,7 +318,7 @@ async function finalizarCompra(event) {
         "input-placeholder-color": "#999999",
       };
 
-      window.Bancard.Checkout.createForm("bancard-iframe-container", processId, styles);
+      window.Bancard.Checkout.createForm("bancard-iframe-container", processId, { styles });
       return;
     }
 
