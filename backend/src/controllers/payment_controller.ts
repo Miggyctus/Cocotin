@@ -76,6 +76,82 @@ export async function initiatePayment(req: Request, res: Response) {
   }
 }
 
+export async function rollbackPayment(req: Request, res: Response) {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "orderId requerido" });
+    }
+
+    const order = await prisma.orders.findUnique({
+      where: { id: Number(orderId) },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Pedido no encontrado" });
+    }
+
+    const shopProcessId = order.id;
+    const token = md5(PRIVATE_KEY + shopProcessId + "rollback" + "0.00");
+
+    const payload = {
+      public_key: PUBLIC_KEY,
+      operation: { token, shop_process_id: shopProcessId },
+    };
+
+    const response = await fetch(`${BANCARD_BASE_URL}/vpos/api/0.3/single_buy/rollback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    return res.json(data);
+  } catch (error) {
+    console.error("rollbackPayment error:", error);
+    return res.status(500).json({ error: "Error ejecutando rollback" });
+  }
+}
+
+export async function getConfirmation(req: Request, res: Response) {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ error: "orderId requerido" });
+    }
+
+    const order = await prisma.orders.findUnique({
+      where: { id: Number(orderId) },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Pedido no encontrado" });
+    }
+
+    const shopProcessId = order.id;
+    const token = md5(PRIVATE_KEY + shopProcessId + "get_confirmation");
+
+    const payload = {
+      public_key: PUBLIC_KEY,
+      operation: { token, shop_process_id: shopProcessId },
+    };
+
+    const response = await fetch(`${BANCARD_BASE_URL}/vpos/api/0.3/single_buy/confirmations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+    return res.json(data);
+  } catch (error) {
+    console.error("getConfirmation error:", error);
+    return res.status(500).json({ error: "Error consultando confirmación" });
+  }
+}
+
 // Endpoint que Bancard llama para confirmar/cancelar un pago.
 // Debe responder 200 con { status: "success" } en menos de 30 segundos.
 export async function confirmPayment(req: Request, res: Response) {
