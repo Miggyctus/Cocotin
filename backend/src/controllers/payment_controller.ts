@@ -76,6 +76,30 @@ export async function initiatePayment(req: Request, res: Response) {
   }
 }
 
+export async function getOrderStatus(req: Request, res: Response) {
+  try {
+    const orderId = Number(req.params.orderId);
+
+    if (!orderId) {
+      return res.status(400).json({ error: "orderId inválido" });
+    }
+
+    const order = await prisma.orders.findUnique({
+      where: { id: orderId },
+      select: { id: true, status: true, total: true },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Pedido no encontrado" });
+    }
+
+    return res.json({ orderId: order.id, status: order.status, total: order.total });
+  } catch (error) {
+    console.error("getOrderStatus error:", error);
+    return res.status(500).json({ error: "Error consultando pedido" });
+  }
+}
+
 export async function rollbackPayment(req: Request, res: Response) {
   try {
     const { orderId } = req.body;

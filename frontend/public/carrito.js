@@ -397,9 +397,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const total = sessionStorage.getItem("pendingOrderTotal");
     sessionStorage.removeItem("pendingOrderId");
     sessionStorage.removeItem("pendingOrderTotal");
+
     resultDiv.style.display = "block";
-    resultDiv.innerHTML = generarTarjetaExitoHTML({ orderId, total });
+    resultDiv.innerHTML = `<div class="payment-card"><p>⏳ Verificando pago...</p></div>`;
     resultDiv.scrollIntoView({ behavior: "smooth" });
+
+    try {
+      const statusRes = await fetch(`${API_URL}/payment/status/${orderId}`);
+      const statusData = await statusRes.json();
+
+      if (statusData.status === "PAID") {
+        resultDiv.innerHTML = generarTarjetaExitoHTML({ orderId, total: statusData.total });
+      } else {
+        resultDiv.innerHTML = `
+          <div class="payment-card">
+            <div class="payment-header">
+              <h2>Pago no confirmado ⚠️</h2>
+              <span class="payment-status" style="background:#fff3cd;color:#856404;">Pendiente</span>
+            </div>
+            <div class="payment-section">
+              <p>Tu pedido fue creado pero el pago no pudo confirmarse. Si realizaste el pago, esperá unos minutos y revisá tu correo.</p>
+              <p style="margin-top:8px;">Si el problema persiste, contactanos por WhatsApp.</p>
+            </div>
+            <a href="https://wa.me/595984680361" target="_blank" class="btn-whatsapp">Contactar por WhatsApp</a>
+          </div>`;
+      }
+    } catch {
+      resultDiv.innerHTML = generarTarjetaExitoHTML({ orderId, total });
+    }
   } else if (params.get("pago") === "cancelado") {
     resultDiv.style.display = "block";
     resultDiv.innerHTML = generarTarjetaCanceladaHTML();
