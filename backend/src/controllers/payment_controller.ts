@@ -106,7 +106,18 @@ export async function rollbackPayment(req: Request, res: Response) {
       body: JSON.stringify(payload),
     });
 
-    const data = await response.json();
+    const data = await response.json() as { status: string; messages?: { key: string }[] };
+
+    const success = data.status === "success" ||
+      data.messages?.some(m => m.key === "RollbackSuccessful" || m.key === "PaymentNotFoundError");
+
+    if (success) {
+      await prisma.orders.update({
+        where: { id: Number(orderId) },
+        data: { status: "CANCELLED" },
+      });
+    }
+
     return res.json(data);
   } catch (error) {
     console.error("rollbackPayment error:", error);
