@@ -386,7 +386,7 @@ function actualizarPreviewPago(metodo) {
 /* =========================
    Init
 ========================= */
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   renderCarrito();
 
   const params = new URLSearchParams(window.location.search);
