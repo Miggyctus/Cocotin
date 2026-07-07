@@ -200,6 +200,7 @@ export async function confirmPayment(req: Request, res: Response) {
     const {
       shop_process_id,
       response: bancardResponse,
+      response_code,
       amount,
       currency,
       token,
@@ -215,8 +216,8 @@ export async function confirmPayment(req: Request, res: Response) {
       return res.status(400).json({ status: "error" });
     }
 
-    // Solo actualizar si la transacción fue aprobada y el pedido sigue PENDING
-    if (bancardResponse === "S") {
+    // Actualizar a PAID solo si la transacción fue aprobada (response "S" + response_code "00")
+    if (bancardResponse === "S" && response_code === "00") {
       await prisma.orders.updateMany({
         where: { id: Number(shop_process_id), status: "PENDING" },
         data: { status: "PAID" },
