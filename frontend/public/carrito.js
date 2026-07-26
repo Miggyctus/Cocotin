@@ -227,7 +227,7 @@ function loadBancardScript() {
   return new Promise((resolve, reject) => {
     if (window.Bancard) { resolve(); return; }
     const script = document.createElement("script");
-    script.src = "https://vpos.infonet.com.py:8888/checkout/javascript/dist/bancard-checkout-4.0.0.js";
+    script.src = "https://vpos.infonet.com.py/checkout/javascript/dist/bancard-checkout-4.0.0.js";
     script.onload = resolve;
     script.onerror = reject;
     document.head.appendChild(script);
