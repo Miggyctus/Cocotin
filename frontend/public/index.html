@@ -124,6 +124,28 @@
   </div>
 </section>
 
+<!-- BANNER CAROUSEL -->
+<section class="banner-carousel">
+  <div class="carousel-track" id="carousel-track">
+    <div class="carousel-slide"><img src="images/cocotin1.jpeg" alt="Pañales" onclick="filtrarBanner('Pañales')"></div>
+    <div class="carousel-slide"><img src="images/cocotin5.jpeg" alt="Alimentación" onclick="filtrarBanner('Alimentación')"></div>
+    <div class="carousel-slide"><img src="images/cocotin4.jpeg" alt="Cuidado e Higiene" onclick="filtrarBanner('Higiene')"></div>
+    <div class="carousel-slide"><img src="images/cocotin2.jpeg" alt="Ofertas" onclick="filtrarBanner('Ofertas')"></div>
+    <div class="carousel-slide"><img src="images/cocotin3.jpeg" alt="Ofertas" onclick="filtrarBanner('Ofertas')"></div>
+    <div class="carousel-slide"><img src="images/cocotin.jpeg" alt="Maternidad y Lactancia" onclick="filtrarBanner('Cuidado')"></div>
+  </div>
+  <button class="carousel-btn carousel-prev" onclick="moverCarousel(-1)">&#8249;</button>
+  <button class="carousel-btn carousel-next" onclick="moverCarousel(1)">&#8250;</button>
+  <div class="carousel-dots" id="carousel-dots">
+    <span class="dot active" onclick="irASlide(0)"></span>
+    <span class="dot" onclick="irASlide(1)"></span>
+    <span class="dot" onclick="irASlide(2)"></span>
+    <span class="dot" onclick="irASlide(3)"></span>
+    <span class="dot" onclick="irASlide(4)"></span>
+    <span class="dot" onclick="irASlide(5)"></span>
+  </div>
+</section>
+
 <!-- MAIN SHOP LAYOUT -->
 <div class="shop-wrapper" id="shop-layout">
 

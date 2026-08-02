@@ -438,3 +438,45 @@ const logo = document.querySelector(".logo");
 if (logo) {
   logo.addEventListener("click", () => { window.location.href = "index.html"; });
 }
+
+// ============================
+// BANNER CAROUSEL
+// ============================
+(function () {
+  let idx = 0;
+  const total = 6;
+  let timer;
+
+  function update() {
+    const track = document.getElementById("carousel-track");
+    if (!track) return;
+    track.style.transform = `translateX(-${idx * 100}%)`;
+    document.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("active", i === idx));
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => { idx = (idx + 1) % total; update(); }, 5000);
+  }
+
+  window.moverCarousel = function (dir) {
+    idx = (idx + dir + total) % total;
+    update();
+    resetTimer();
+  };
+
+  window.irASlide = function (i) {
+    idx = i;
+    update();
+    resetTimer();
+  };
+
+  window.filtrarBanner = function (main) {
+    document.querySelector("#shop-layout")?.scrollIntoView({ behavior: "smooth" });
+    if (main === "Ofertas") { filtrarOfertas(); return; }
+    const item = [...document.querySelectorAll(".cat-nav-item")].find(el => el.dataset.main === main);
+    if (item) item.click();
+  };
+
+  resetTimer();
+})();
