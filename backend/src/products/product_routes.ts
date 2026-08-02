@@ -2,14 +2,8 @@ import { Router } from "express";
 import { createProduct, getProducts, toggleProduct, getProductById, updateProduct, applyCategoryDiscount } from "./product_controller";
 import { requireAuth, requireAdmin } from "../middleware/auth_middleware";
 import { upload } from "../middleware/upload";
-import prisma from "../database/prisma";
 
 const router = Router();
-
-router.get("/categories", async (_, res) => {
-  const cats = await prisma.category.findMany({ orderBy: { name: "asc" } });
-  res.json(cats);
-});
 
 router.get("/", getProducts);
 

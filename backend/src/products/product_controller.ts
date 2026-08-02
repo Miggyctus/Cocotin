@@ -234,10 +234,10 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 export async function applyCategoryDiscount(req: Request, res: Response) {
   try {
-    const { categoryId, discountPercent, startDate, endDate } = req.body;
+    const { categoryName, discountPercent, startDate, endDate } = req.body;
 
-    if (!categoryId) {
-      return res.status(400).json({ error: "categoryId requerido" });
+    if (!categoryName) {
+      return res.status(400).json({ error: "categoryName requerido" });
     }
 
     const parsedPercent = discountPercent !== undefined && discountPercent !== ""
@@ -248,7 +248,7 @@ export async function applyCategoryDiscount(req: Request, res: Response) {
     const parsedEnd = endDate ? new Date(endDate) : null;
 
     const result = await prisma.product.updateMany({
-      where: { categoryId: Number(categoryId) },
+      where: { category: { name: categoryName } },
       data: {
         discountPercent: parsedPercent,
         discountStartDate: parsedStart,

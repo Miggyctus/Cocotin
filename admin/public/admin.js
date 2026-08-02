@@ -481,27 +481,13 @@ async function subirExcel() {
 /* =========================
    DESCUENTO POR CATEGORÍA
 ========================= */
-async function cargarCategoriasSelect() {
-  try {
-    const res = await fetch(`${API_URL}/products/categories`);
-    const categorias = await res.json();
-
-    const selectDescuento = document.getElementById("cat-descuento-categoria");
-    if (selectDescuento) {
-      selectDescuento.innerHTML = categorias
-        .map(c => `<option value="${c.id}">${c.name}</option>`)
-        .join("");
-    }
-
-    const selectProducto = document.getElementById("categoria");
-    if (selectProducto) {
-      selectProducto.innerHTML = categorias
-        .map(c => `<option value="${c.name}">${c.name}</option>`)
-        .join("");
-    }
-  } catch (err) {
-    console.error("Error cargando categorías:", err);
-  }
+function cargarCategoriasSelect() {
+  const origen = document.getElementById("categoria");
+  const destino = document.getElementById("cat-descuento-categoria");
+  if (!origen || !destino) return;
+  destino.innerHTML = Array.from(origen.options)
+    .map(o => `<option value="${o.value}">${o.text}</option>`)
+    .join("");
 }
 
 async function aplicarDescuentoCategoria() {
@@ -523,7 +509,7 @@ async function aplicarDescuentoCategoria() {
         Authorization: "Bearer " + TOKEN,
       },
       body: JSON.stringify({
-        categoryId: Number(categoryId),
+        categoryName: categoryId,
         discountPercent: discountPercent !== "" ? parseFloat(discountPercent) : null,
         startDate: startDate || null,
         endDate: endDate || null,
