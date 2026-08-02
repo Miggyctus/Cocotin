@@ -204,7 +204,7 @@ async function editarProducto(id) {
   document.getElementById("descripcion").value = producto.description ?? "";
   document.getElementById("precio").value = producto.price;
   document.getElementById("stock").value = producto.stock;
-  document.getElementById("categoria").value = producto.categoryId;
+  document.getElementById("categoria").value = producto.category?.name ?? "";
   document.getElementById("barcode").value = producto.barcode ?? "";
   document.getElementById("descuento_porcentaje").value = producto.discountPercent ?? "";
   document.getElementById("descuento_inicio").value = producto.discountStartDate
@@ -485,12 +485,23 @@ async function cargarCategoriasSelect() {
   try {
     const res = await fetch(`${API_URL}/products`);
     const productos = await res.json();
-    const categorias = [...new Map(productos.map(p => [p.category?.id, p.category]).filter(([id]) => id)).values()];
-    const select = document.getElementById("cat-descuento-categoria");
-    if (!select) return;
-    select.innerHTML = categorias
-      .map(c => `<option value="${c.id}">${c.name}</option>`)
-      .join("");
+    const categorias = [...new Map(
+      productos.map(p => [p.category?.id, p.category]).filter(([id]) => id)
+    ).values()].sort((a, b) => a.name.localeCompare(b.name));
+
+    const selectDescuento = document.getElementById("cat-descuento-categoria");
+    if (selectDescuento) {
+      selectDescuento.innerHTML = categorias
+        .map(c => `<option value="${c.id}">${c.name}</option>`)
+        .join("");
+    }
+
+    const selectProducto = document.getElementById("categoria");
+    if (selectProducto) {
+      selectProducto.innerHTML = categorias
+        .map(c => `<option value="${c.name}">${c.name}</option>`)
+        .join("");
+    }
   } catch (err) {
     console.error("Error cargando categorías:", err);
   }
