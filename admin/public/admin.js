@@ -483,11 +483,8 @@ async function subirExcel() {
 ========================= */
 async function cargarCategoriasSelect() {
   try {
-    const res = await fetch(`${API_URL}/products`);
-    const productos = await res.json();
-    const categorias = [...new Map(
-      productos.map(p => [p.category?.id, p.category]).filter(([id]) => id)
-    ).values()].sort((a, b) => a.name.localeCompare(b.name));
+    const res = await fetch(`${API_URL}/products/categories`);
+    const categorias = await res.json();
 
     const selectDescuento = document.getElementById("cat-descuento-categoria");
     if (selectDescuento) {
