@@ -144,7 +144,12 @@ function crearProductCard(producto) {
       <h3 class="product-title">${producto.name}</h3>
       <div class="product-footer">
         <div class="product-price">
-          <span class="price-current">₲ ${Number(producto.price).toLocaleString("es-PY")}</span>
+          ${producto.discountedPrice != null
+            ? `<span class="price-old">₲ ${Number(producto.price).toLocaleString("es-PY")}</span>
+               <span class="price-current">₲ ${Number(producto.discountedPrice).toLocaleString("es-PY")}</span>
+               <span class="discount-label">Con efectivo/transferencia</span>`
+            : `<span class="price-current">₲ ${Number(producto.price).toLocaleString("es-PY")}</span>`
+          }
         </div>
         <button class="btn-add-cart" onclick="event.stopPropagation(); agregarAlCarrito(${producto.id})">+</button>
       </div>
@@ -412,7 +417,12 @@ function verProducto(id) {
     <img src="${getImageUrl(producto.image)}" style="width:100%;max-height:300px;object-fit:cover;border-radius:8px;">
     <h2>${producto.name}</h2>
     <p>${producto.description ?? ""}</p>
-    <h3>₲ ${Number(producto.price).toLocaleString("es-PY")}</h3>
+    ${producto.discountedPrice != null
+      ? `<p style="margin:0"><span style="text-decoration:line-through;color:#999;font-size:14px;">₲ ${Number(producto.price).toLocaleString("es-PY")}</span></p>
+         <h3 style="margin:4px 0">₲ ${Number(producto.discountedPrice).toLocaleString("es-PY")}</h3>
+         <span style="font-size:12px;color:#e91e8c;font-weight:600;">Con efectivo/transferencia</span>`
+      : `<h3>₲ ${Number(producto.price).toLocaleString("es-PY")}</h3>`
+    }
     <button class="btn-primary" onclick="agregarAlCarrito(${producto.id})">Agregar al carrito</button>
   `;
   document.getElementById("modal-producto").style.display = "flex";

@@ -1,5 +1,16 @@
 import prisma from "../database/prisma";
 import { Request, Response } from "express";
+import { isDiscountActive, computeDiscountedPrice } from "./discount_utils";
+
+function enrichWithDiscount(product: any) {
+  const active = isDiscountActive(product);
+  return {
+    ...product,
+    discountedPrice: active
+      ? computeDiscountedPrice(product.price, product.discountPercent)
+      : null,
+  };
+}
 
 export async function getProducts(req: Request, res: Response) {
   try {
@@ -26,7 +37,7 @@ export async function getProducts(req: Request, res: Response) {
       },
     });
 
-    res.json(productos);
+    res.json(productos.map(enrichWithDiscount));
 
   } catch (err) {
     console.error("getProducts:", err);
@@ -148,7 +159,7 @@ export async function getProductById(req: Request, res: Response) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
 
-    res.json(producto);
+    res.json(enrichWithDiscount(producto));
 
   } catch (err) {
     console.error("getProductById:", err);
@@ -172,24 +183,29 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
 
-    const { name, description, price, stock, category } = req.body;
+    const { name, description, price, stock, category, discountPercent, discountStartDate, discountEndDate } = req.body;
 
     let categoryId = existingProduct.categoryId;
 
-    // Si viene categoría nueva
     if (category) {
       const categoryRecord = await prisma.category.upsert({
         where: { name: category },
         update: {},
         create: { name: category },
       });
-
       categoryId = categoryRecord.id;
     }
 
     const image = req.file
       ? `/uploads/${req.file.filename}`
       : existingProduct.image;
+
+    const parsedDiscountPercent = discountPercent !== undefined && discountPercent !== ""
+      ? parseFloat(discountPercent)
+      : null;
+
+    const parsedStartDate = discountStartDate ? new Date(discountStartDate) : null;
+    const parsedEndDate = discountEndDate ? new Date(discountEndDate) : null;
 
     const updated = await prisma.product.update({
       where: { id },
@@ -200,15 +216,49 @@ export const updateProduct = async (req: Request, res: Response) => {
         stock: stock ? Number(stock) : existingProduct.stock,
         image,
         categoryId,
+        discountPercent: parsedDiscountPercent,
+        discountStartDate: parsedStartDate,
+        discountEndDate: parsedEndDate,
       },
       include: {
         category: true,
       },
     });
 
-    res.json(updated);
+    res.json(enrichWithDiscount(updated));
   } catch (error) {
     console.error("updateProduct:", error);
     res.status(500).json({ error: "Error actualizando producto" });
   }
 };
+
+export async function applyCategoryDiscount(req: Request, res: Response) {
+  try {
+    const { categoryId, discountPercent, startDate, endDate } = req.body;
+
+    if (!categoryId) {
+      return res.status(400).json({ error: "categoryId requerido" });
+    }
+
+    const parsedPercent = discountPercent !== undefined && discountPercent !== ""
+      ? parseFloat(discountPercent)
+      : null;
+
+    const parsedStart = startDate ? new Date(startDate) : null;
+    const parsedEnd = endDate ? new Date(endDate) : null;
+
+    const result = await prisma.product.updateMany({
+      where: { categoryId: Number(categoryId) },
+      data: {
+        discountPercent: parsedPercent,
+        discountStartDate: parsedStart,
+        discountEndDate: parsedEnd,
+      },
+    });
+
+    return res.json({ updated: result.count });
+  } catch (error) {
+    console.error("applyCategoryDiscount:", error);
+    return res.status(500).json({ error: "Error aplicando descuento" });
+  }
+}

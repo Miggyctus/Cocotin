@@ -569,6 +569,12 @@ body {
   color: var(--text-light);
   text-decoration: line-through;
 }
+.discount-label {
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 700;
+  display: block;
+}
 .btn-add-cart {
   width: 36px;
   height: 36px;

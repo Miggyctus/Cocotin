@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { createProduct, getProducts , toggleProduct , getProductById , updateProduct} from "./product_controller";
+import { createProduct, getProducts, toggleProduct, getProductById, updateProduct, applyCategoryDiscount } from "./product_controller";
 import { requireAuth, requireAdmin } from "../middleware/auth_middleware";
 import { upload } from "../middleware/upload";
 
 const router = Router();
 
 router.get("/", getProducts);
+
+router.patch("/category-discount", requireAuth, requireAdmin, applyCategoryDiscount);
 
 router.patch("/:id/toggle", requireAuth, requireAdmin, toggleProduct);
 

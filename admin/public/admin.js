@@ -77,7 +77,10 @@ async function cargarProductosAdmin() {
           <td>${producto.name}</td>
           <td>${producto.barcode ?? "-"}</td>
           <td>${producto.category?.name ?? "-"}</td>
-          <td>₲ ${Number(producto.price).toLocaleString()}</td>
+          <td>
+            ₲ ${Number(producto.price).toLocaleString()}
+            ${producto.discountedPrice != null ? `<br><span style="font-size:11px;color:#e91e8c;font-weight:600;">🏷️ ${producto.discountPercent}% → ₲ ${Number(producto.discountedPrice).toLocaleString()}</span>` : ""}
+          </td>
           <td>${producto.stock}</td>
           <td>
             <span class="badge ${producto.isActive ? "activo" : "inactivo"}">
@@ -126,6 +129,12 @@ document.getElementById("form-producto")
     formData.append("stock", document.getElementById("stock").value);
     formData.append("category", document.getElementById("categoria").value);
     formData.append("barcode", document.getElementById("barcode").value);
+    const descuentoPct = document.getElementById("descuento_porcentaje").value;
+    const descuentoInicio = document.getElementById("descuento_inicio").value;
+    const descuentoFin = document.getElementById("descuento_fin").value;
+    formData.append("discountPercent", descuentoPct);
+    formData.append("discountStartDate", descuentoInicio);
+    formData.append("discountEndDate", descuentoFin);
     const imageInput = document.getElementById("imagen");
     if (imageInput.files[0]) {
       formData.append("image", imageInput.files[0]);
@@ -197,6 +206,13 @@ async function editarProducto(id) {
   document.getElementById("stock").value = producto.stock;
   document.getElementById("categoria").value = producto.categoryId;
   document.getElementById("barcode").value = producto.barcode ?? "";
+  document.getElementById("descuento_porcentaje").value = producto.discountPercent ?? "";
+  document.getElementById("descuento_inicio").value = producto.discountStartDate
+    ? new Date(producto.discountStartDate).toISOString().split("T")[0]
+    : "";
+  document.getElementById("descuento_fin").value = producto.discountEndDate
+    ? new Date(producto.discountEndDate).toISOString().split("T")[0]
+    : "";
 
   if (producto.image) {
     const img = document.getElementById("preview-imagen");
@@ -463,6 +479,64 @@ async function subirExcel() {
 }
 
 /* =========================
+   DESCUENTO POR CATEGORÍA
+========================= */
+async function cargarCategoriasSelect() {
+  try {
+    const res = await fetch(`${API_URL}/products`);
+    const productos = await res.json();
+    const categorias = [...new Map(productos.map(p => [p.category?.id, p.category]).filter(([id]) => id)).values()];
+    const select = document.getElementById("cat-descuento-categoria");
+    if (!select) return;
+    select.innerHTML = categorias
+      .map(c => `<option value="${c.id}">${c.name}</option>`)
+      .join("");
+  } catch (err) {
+    console.error("Error cargando categorías:", err);
+  }
+}
+
+async function aplicarDescuentoCategoria() {
+  const categoryId = document.getElementById("cat-descuento-categoria").value;
+  const discountPercent = document.getElementById("cat-descuento-porcentaje").value;
+  const startDate = document.getElementById("cat-descuento-inicio").value;
+  const endDate = document.getElementById("cat-descuento-fin").value;
+
+  if (!categoryId) {
+    alert("Seleccioná una categoría");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/products/category-discount`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + TOKEN,
+      },
+      body: JSON.stringify({
+        categoryId: Number(categoryId),
+        discountPercent: discountPercent !== "" ? parseFloat(discountPercent) : null,
+        startDate: startDate || null,
+        endDate: endDate || null,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Error");
+
+    alert(`Descuento aplicado a ${data.updated} producto(s)`);
+    cargarProductosAdmin();
+  } catch (err) {
+    console.error(err);
+    alert("No se pudo aplicar el descuento");
+  }
+}
+
+/* =========================
    INIT
 ========================= */
-document.addEventListener("DOMContentLoaded", cargarProductosAdmin);
+document.addEventListener("DOMContentLoaded", () => {
+  cargarProductosAdmin();
+  cargarCategoriasSelect();
+});

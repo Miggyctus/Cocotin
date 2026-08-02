@@ -45,6 +45,10 @@ description String? @db.Text
   categoryId  Int
   category    Category  @relation(fields: [categoryId], references: [id])
 
+  discountPercent    Float?
+  discountStartDate  DateTime?
+  discountEndDate    DateTime?
+
   orderItems  OrderItem[]
 
   createdAt   DateTime  @default(now())

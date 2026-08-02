@@ -119,9 +119,15 @@ function renderProducto(producto) {
         <h1>${producto.name}</h1>
         <p class="producto-description">${producto.description ?? ""}</p>
 
-        <h2 class="producto-price">
-          ₲ ${Number(producto.price).toLocaleString("es-PY")}
-        </h2>
+        ${producto.discountedPrice != null ? `
+          <div class="producto-price-block">
+            <span class="price-old">₲ ${Number(producto.price).toLocaleString("es-PY")}</span>
+            <h2 class="producto-price">₲ ${Number(producto.discountedPrice).toLocaleString("es-PY")}</h2>
+            <span class="discount-label">Con efectivo/transferencia</span>
+          </div>
+        ` : `
+          <h2 class="producto-price">₲ ${Number(producto.price).toLocaleString("es-PY")}</h2>
+        `}
 
         ${stockHTML}
 
@@ -171,7 +177,11 @@ async function renderRelacionados(productoActual) {
       card.innerHTML = `
         <img src="${getImageUrl(p.image)}" alt="${p.name}">
         <p>${p.name}</p>
-        <span>₲ ${Number(p.price).toLocaleString("es-PY")}</span>
+        ${p.discountedPrice != null
+          ? `<span style="text-decoration:line-through;color:#999;font-size:12px;">₲ ${Number(p.price).toLocaleString("es-PY")}</span>
+             <span style="font-weight:700;">₲ ${Number(p.discountedPrice).toLocaleString("es-PY")}</span>`
+          : `<span>₲ ${Number(p.price).toLocaleString("es-PY")}</span>`
+        }
       `;
       card.addEventListener("click", () => {
         window.location.href = `producto.html?id=${p.id}`;

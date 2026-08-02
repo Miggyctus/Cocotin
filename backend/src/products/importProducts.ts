@@ -206,10 +206,16 @@ router.post(
           const priceRaw = getRowValue(row, "precio", "Precio", "PRECIO", "price", "Price", "PRICE", "valor", "Valor", "VALOR", "unit price", "Unit Price", "unit_price", "precio_unitario", "precio unitario", "unitprice");
           const stockRaw = getRowValue(row, "stock", "Stock", "STOCK", "cantidad", "Cantidad");
           const imageRaw = getRowValue(row, "imagen", "Imagen", "image", "Image", "image_url", "Image_URL", "Image URL", "imagen_url", "Imagen URL", "url", "URL", "imageUrl", "ImageUrl", "link", "Link");
+          const discountRaw = getRowValue(row, "descuento", "descuento %", "discount", "discount %", "pct_descuento", "Descuento");
 
           const stock = Number(stockRaw ?? 0);
           const categoryId = await resolveCategoryId(row);
           console.log("📂 Procesando categoría ID:", categoryId);
+
+          const parsedDiscount = discountRaw !== undefined ? parseFloat(String(discountRaw)) : NaN;
+          const discountPercent = !isNaN(parsedDiscount) && parsedDiscount >= 0 && parsedDiscount <= 100
+            ? parsedDiscount
+            : null;
 
           const productoData = {
             name: String(getRowValue(row, "nombre", "Nombre", "name", "Name") ?? "Sin nombre").trim() || "Sin nombre",
@@ -219,7 +225,8 @@ router.post(
             image: normalizeUrl(imageRaw),
             isActive: true,
             barcode: codigo,
-            categoryId
+            categoryId,
+            discountPercent,
           };
 
           const existing = await prisma.product.findUnique({
