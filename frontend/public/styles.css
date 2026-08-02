@@ -1307,12 +1307,14 @@ body {
 
 .carousel-track {
   display: flex;
+  flex-wrap: nowrap;
   transition: transform 0.5s ease;
   will-change: transform;
 }
 
 .carousel-slide {
   min-width: 100%;
+  flex-shrink: 0;
 }
 
 .carousel-slide img {
