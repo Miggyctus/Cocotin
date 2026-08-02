@@ -442,41 +442,49 @@ if (logo) {
 // ============================
 // BANNER CAROUSEL
 // ============================
-(function () {
-  let idx = 0;
-  const total = 6;
-  let timer;
+let carouselIdx = 0;
+const carouselTotal = 6;
+let carouselTimer = null;
 
-  function update() {
-    const track = document.getElementById("carousel-track");
-    if (!track) return;
-    track.style.transform = `translateX(-${idx * 100}%)`;
-    document.querySelectorAll(".dot").forEach((d, i) => d.classList.toggle("active", i === idx));
-  }
+function carouselUpdate() {
+  const track = document.getElementById("carousel-track");
+  if (!track) return;
+  track.style.transform = "translateX(-" + (carouselIdx * 100) + "%)";
+  document.querySelectorAll(".dot").forEach(function(d, i) {
+    d.classList.toggle("active", i === carouselIdx);
+  });
+}
 
-  function resetTimer() {
-    clearInterval(timer);
-    timer = setInterval(() => { idx = (idx + 1) % total; update(); }, 5000);
-  }
+function carouselResetTimer() {
+  clearInterval(carouselTimer);
+  carouselTimer = setInterval(function() {
+    carouselIdx = (carouselIdx + 1) % carouselTotal;
+    carouselUpdate();
+  }, 5000);
+}
 
-  window.moverCarousel = function (dir) {
-    idx = (idx + dir + total) % total;
-    update();
-    resetTimer();
-  };
+function moverCarousel(dir) {
+  carouselIdx = (carouselIdx + dir + carouselTotal) % carouselTotal;
+  carouselUpdate();
+  carouselResetTimer();
+}
 
-  window.irASlide = function (i) {
-    idx = i;
-    update();
-    resetTimer();
-  };
+function irASlide(i) {
+  carouselIdx = i;
+  carouselUpdate();
+  carouselResetTimer();
+}
 
-  window.filtrarBanner = function (main) {
-    document.querySelector("#shop-layout")?.scrollIntoView({ behavior: "smooth" });
-    if (main === "Ofertas") { filtrarOfertas(); return; }
-    const item = [...document.querySelectorAll(".cat-nav-item")].find(el => el.dataset.main === main);
-    if (item) item.click();
-  };
+function filtrarBanner(main) {
+  document.querySelector("#shop-layout")?.scrollIntoView({ behavior: "smooth" });
+  if (main === "Ofertas") { filtrarOfertas(); return; }
+  var item = Array.from(document.querySelectorAll(".cat-nav-item")).find(function(el) {
+    return el.dataset.main === main;
+  });
+  if (item) item.click();
+}
 
-  resetTimer();
-})();
+document.addEventListener("DOMContentLoaded", function() {
+  carouselUpdate();
+  carouselResetTimer();
+});

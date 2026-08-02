@@ -1322,9 +1322,6 @@ body {
   height: auto;
   display: block;
   cursor: pointer;
-  max-height: 480px;
-  object-fit: cover;
-  object-position: center;
 }
 
 .carousel-btn {
