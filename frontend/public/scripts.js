@@ -446,15 +446,17 @@ let carouselIdx = 0;
 const carouselTotal = 6;
 let carouselTimer = null;
 
-function carouselUpdate() {
-  const track = document.getElementById("carousel-track");
-  const carousel = document.querySelector(".banner-carousel");
-  if (!track || !carousel) return;
-  const slideWidth = carousel.offsetWidth;
-  track.style.transform = "translateX(-" + (carouselIdx * slideWidth) + "px)";
+function carouselDots() {
   document.querySelectorAll(".dot").forEach(function(d, i) {
     d.classList.toggle("active", i === carouselIdx);
   });
+}
+
+function carouselUpdate() {
+  const track = document.getElementById("carousel-track");
+  if (!track) return;
+  track.scrollTo({ left: carouselIdx * track.clientWidth, behavior: "smooth" });
+  carouselDots();
 }
 
 function carouselResetTimer() {
@@ -487,8 +489,15 @@ function filtrarBanner(main) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  carouselUpdate();
   carouselResetTimer();
+  var track = document.getElementById("carousel-track");
+  if (track) {
+    track.addEventListener("scroll", function() {
+      var idx = Math.round(track.scrollLeft / track.clientWidth);
+      if (idx !== carouselIdx) {
+        carouselIdx = idx;
+        carouselDots();
+      }
+    });
+  }
 });
-
-window.addEventListener("resize", carouselUpdate);

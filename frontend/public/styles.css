@@ -1301,33 +1301,28 @@ body {
   position: relative;
   width: 100%;
   overflow: hidden;
-  background: #000;
-  line-height: 0;
 }
 
 .carousel-track {
   display: flex;
-  flex-wrap: nowrap;
-  transition: transform 0.5s ease;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+
+.carousel-track::-webkit-scrollbar { display: none; }
 
 .carousel-slide {
   flex: 0 0 100%;
-  width: 100%;
-  overflow: hidden;
+  scroll-snap-align: start;
 }
 
 .carousel-slide img {
   width: 100%;
-  height: 500px;
+  height: auto;
   display: block;
   cursor: pointer;
-  object-fit: cover;
-  object-position: center;
-}
-
-@media (max-width: 768px) {
-  .carousel-slide img { height: 220px; }
 }
 
 .carousel-btn {
@@ -1376,7 +1371,6 @@ body {
 .dot.active { background: #fff; }
 
 @media (max-width: 600px) {
-  .carousel-slide img { max-height: 200px; }
   .carousel-btn { width: 34px; height: 34px; font-size: 20px; }
   .sucursales-grid { grid-template-columns: 1fr; }
 }
