@@ -448,8 +448,10 @@ let carouselTimer = null;
 
 function carouselUpdate() {
   const track = document.getElementById("carousel-track");
-  if (!track) return;
-  track.style.transform = "translateX(-" + (carouselIdx * 100) + "%)";
+  const carousel = document.querySelector(".banner-carousel");
+  if (!track || !carousel) return;
+  const slideWidth = carousel.offsetWidth;
+  track.style.transform = "translateX(-" + (carouselIdx * slideWidth) + "px)";
   document.querySelectorAll(".dot").forEach(function(d, i) {
     d.classList.toggle("active", i === carouselIdx);
   });
@@ -488,3 +490,5 @@ document.addEventListener("DOMContentLoaded", function() {
   carouselUpdate();
   carouselResetTimer();
 });
+
+window.addEventListener("resize", carouselUpdate);
