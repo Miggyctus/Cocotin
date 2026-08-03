@@ -1312,15 +1312,22 @@ body {
 }
 
 .carousel-slide {
-  flex: 0 0 100vw;
-  width: 100vw;
+  flex: 0 0 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 .carousel-slide img {
   width: 100%;
-  height: auto;
+  height: 500px;
   display: block;
   cursor: pointer;
+  object-fit: cover;
+  object-position: center;
+}
+
+@media (max-width: 768px) {
+  .carousel-slide img { height: 220px; }
 }
 
 .carousel-btn {
