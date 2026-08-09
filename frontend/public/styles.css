@@ -1316,19 +1316,19 @@ body {
 .carousel-slide {
   flex: 0 0 100%;
   scroll-snap-align: start;
-  background: #EEE0C5;
 }
 
 .carousel-slide img {
   width: 100%;
-  height: 420px;
+  height: 450px;
   display: block;
   cursor: pointer;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 @media (max-width: 768px) {
-  .carousel-slide img { height: 260px; }
+  .carousel-slide img { height: 220px; }
 }
 
 .carousel-btn {

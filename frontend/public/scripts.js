@@ -443,7 +443,7 @@ if (logo) {
 // BANNER CAROUSEL
 // ============================
 let carouselIdx = 0;
-const carouselTotal = 6;
+const carouselTotal = 5;
 let carouselTimer = null;
 
 function carouselDots() {
