@@ -1320,15 +1320,9 @@ body {
 
 .carousel-slide img {
   width: 100%;
-  height: 450px;
+  height: auto;
   display: block;
   cursor: pointer;
-  object-fit: cover;
-  object-position: center;
-}
-
-@media (max-width: 768px) {
-  .carousel-slide img { height: 220px; }
 }
 
 .carousel-btn {
