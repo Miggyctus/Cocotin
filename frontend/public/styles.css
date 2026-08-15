@@ -1325,6 +1325,10 @@ body {
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .carousel-slide img { min-height: 220px; }
+}
+
 .carousel-btn {
   position: absolute;
   top: 50%;
