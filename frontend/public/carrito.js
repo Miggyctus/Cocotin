@@ -1,5 +1,19 @@
 const API_URL = "/api";
 
+// Método de pago seleccionado actualmente
+let metodoPagoActual = "TRANSFER";
+
+// Mapeo: código carrito → nombre en discountPaymentMethods
+const METODO_MAP = { TRANSFER: "transferencia", CASH: "efectivo", CARD: "tarjeta" };
+
+// ¿Aplica descuento para el método de pago actual?
+function descuentoAplica(producto) {
+  if (!producto.discountedPrice) return false;
+  if (!producto.discountPaymentMethods) return true; // sin restricción = aplica a todos
+  const metodo = METODO_MAP[metodoPagoActual];
+  return metodo ? producto.discountPaymentMethods.split(",").includes(metodo) : false;
+}
+
 function getImageUrl(image) {
   if (!image) return "https://via.placeholder.com/400";
   if (image.startsWith("http")) return image;
@@ -78,8 +92,15 @@ async function renderCarrito() {
     const producto = productos.find(p => p.id === item.id);
     if (!producto) return;
 
-    const subtotal = producto.price * item.cantidad;
+    const aplica = descuentoAplica(producto);
+    const precioUnitario = aplica ? Number(producto.discountedPrice) : Number(producto.price);
+    const subtotal = precioUnitario * item.cantidad;
     total += subtotal;
+
+    const precioHTML = aplica
+      ? `<p class="carrito-item-price"><span style="text-decoration:line-through;color:#aaa;margin-right:6px;">₲ ${Number(producto.price).toLocaleString("es-PY")}</span><span style="color:#c0392b;font-weight:700;">₲ ${Number(producto.discountedPrice).toLocaleString("es-PY")}</span></p>
+         <p style="font-size:11px;color:#c0392b;margin:0;">🏷️ Descuento por ${METODO_MAP[metodoPagoActual]}</p>`
+      : `<p class="carrito-item-price">₲ ${Number(producto.price).toLocaleString("es-PY")}</p>`;
 
     const div = document.createElement("div");
     div.className = "carrito-item";
@@ -88,7 +109,7 @@ async function renderCarrito() {
       <div class="carrito-item-info">
         <h3 class="carrito-item-name">${producto.name}</h3>
         <p class="carrito-item-cat">${producto.category?.name ?? ""}</p>
-        <p class="carrito-item-price">₲ ${Number(producto.price).toLocaleString("es-PY")}</p>
+        ${precioHTML}
       </div>
       <div class="carrito-item-actions">
         <div class="cart-actions">
@@ -435,7 +456,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   form.addEventListener("submit", finalizarCompra);
 
   document.querySelectorAll('input[name="pago"]').forEach(radio => {
-    radio.addEventListener("change", () => actualizarPreviewPago(radio.value));
+    radio.addEventListener("change", () => {
+      metodoPagoActual = radio.value;
+      actualizarPreviewPago(radio.value);
+      renderCarrito();
+    });
   });
 
   actualizarPreviewPago("TRANSFER");

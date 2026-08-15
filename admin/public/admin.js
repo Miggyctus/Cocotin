@@ -513,6 +513,9 @@ async function aplicarDescuentoCategoria() {
         discountPercent: discountPercent !== "" ? parseFloat(discountPercent) : null,
         startDate: startDate || null,
         endDate: endDate || null,
+        paymentMethods: ["efectivo","transferencia","tarjeta"].filter(m =>
+          document.getElementById("metodo-" + m)?.checked
+        ),
       }),
     });
 

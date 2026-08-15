@@ -183,7 +183,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
 
-    const { name, description, price, stock, category, discountPercent, discountStartDate, discountEndDate } = req.body;
+    const { name, description, price, stock, category, discountPercent, discountStartDate, discountEndDate, discountPaymentMethods } = req.body;
 
     let categoryId = existingProduct.categoryId;
 
@@ -219,6 +219,7 @@ export const updateProduct = async (req: Request, res: Response) => {
         discountPercent: parsedDiscountPercent,
         discountStartDate: parsedStartDate,
         discountEndDate: parsedEndDate,
+        discountPaymentMethods: discountPaymentMethods || null,
       },
       include: {
         category: true,
@@ -234,7 +235,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
 export async function applyCategoryDiscount(req: Request, res: Response) {
   try {
-    const { categoryName, discountPercent, startDate, endDate } = req.body;
+    const { categoryName, discountPercent, startDate, endDate, paymentMethods } = req.body;
 
     if (!categoryName) {
       return res.status(400).json({ error: "categoryName requerido" });
@@ -246,6 +247,9 @@ export async function applyCategoryDiscount(req: Request, res: Response) {
 
     const parsedStart = startDate ? new Date(startDate) : null;
     const parsedEnd = endDate ? new Date(endDate) : null;
+    const parsedMethods = Array.isArray(paymentMethods) && paymentMethods.length > 0
+      ? paymentMethods.join(",")
+      : null;
 
     const result = await prisma.product.updateMany({
       where: { category: { name: categoryName } },
@@ -253,6 +257,7 @@ export async function applyCategoryDiscount(req: Request, res: Response) {
         discountPercent: parsedPercent,
         discountStartDate: parsedStart,
         discountEndDate: parsedEnd,
+        discountPaymentMethods: parsedMethods,
       },
     });
 
