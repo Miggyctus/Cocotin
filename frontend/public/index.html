@@ -123,9 +123,24 @@
         <img src="images/cocotin5.png" alt="Alimentación" onclick="filtrarBanner('Alimentación')">
       </picture>
     </div>
-    <div class="carousel-slide"><img src="images/cocotin4.jpeg" alt="Cuidado e Higiene" onclick="filtrarBanner('Higiene')"></div>
-    <div class="carousel-slide"><img src="images/cocotin3.jpeg" alt="Ofertas" onclick="filtrarBanner('Ofertas')"></div>
-    <div class="carousel-slide"><img src="images/cocotin.jpeg" alt="Maternidad y Lactancia" onclick="filtrarBanner('Cuidado')"></div>
+    <div class="carousel-slide">
+      <picture>
+        <source media="(max-width: 768px)" srcset="images/cocotin4.jpeg">
+        <img src="images/cocotin4.png" alt="Cuidado e Higiene" onclick="filtrarBanner('Higiene')">
+      </picture>
+    </div>
+    <div class="carousel-slide">
+      <picture>
+        <source media="(max-width: 768px)" srcset="images/cocotin3.jpeg">
+        <img src="images/cocotin3.png" alt="Ofertas" onclick="filtrarBanner('Ofertas')">
+      </picture>
+    </div>
+    <div class="carousel-slide">
+      <picture>
+        <source media="(max-width: 768px)" srcset="images/cocotin.jpeg">
+        <img src="images/cocotin.png" alt="Maternidad y Lactancia" onclick="filtrarBanner('Cuidado')">
+      </picture>
+    </div>
   </div>
   <button class="carousel-btn carousel-prev" onclick="moverCarousel(-1)">&#8249;</button>
   <button class="carousel-btn carousel-next" onclick="moverCarousel(1)">&#8250;</button>
